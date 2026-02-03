@@ -17,8 +17,10 @@ inputDocuments:
   - _bmad-output/planning-artifacts/prd-validation-Planis-2026-02-03.md
   - _bmad-output/planning-artifacts/import-threat-model-Planis-2026-02-03.md
 stepsCompleted: [1]
-lastUpdatedStep: 6
-stepsCompleted: [1, 2, 3, 4, 5, 6]
+lastUpdatedStep: 8
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
+status: complete
+completedAt: 2026-02-03T12:30:00Z
 ---
 
 # Architecture Decision Document — Planis
@@ -442,6 +444,139 @@ planis/
 ---
 
 Reply `C` to save this project structure into the architecture document and proceed to `step-07-validation.md`, or `A`/`P` to explore further.
+
+## Architecture Validation Results
+
+### Coherence Validation ✅
+
+**Decision Compatibility:**
+- Technology choices are compatible: Vite + React + TypeScript align with chosen patterns (workers, IndexedDB). No conflicting choices detected.
+
+**Pattern Consistency:**
+- Implementation patterns (naming, worker message protocol, storage boundaries) support the architectural decisions and reduce agent divergence risks.
+
+**Structure Alignment:**
+- Project structure maps cleanly to architectural components and supports integration points (workers ↔ storage ↔ UI).
+
+### Requirements Coverage Validation ✅
+
+**Functional Requirements Coverage:**
+- All FRs from the PRD (FR1..FR19) are addressed by design: import worker & ImportReport (FR1/4/5), calendar UI and CRUD (FR2/7/9/10/11), recurrence (FR3), export (FR6/19), notifications (FR12/13), offline storage (FR14), resume import (FR15), accessibility (FR16).
+
+**Non-Functional Requirements Coverage:**
+- Performance: import pipeline and batching address NFR-P2; UI performance guidance covers NFR-P1.
+- Security/Privacy: sanitization, opt-in telemetry, and debug export policies address NFR-S1..S3.
+- Reliability/Scalability: checkpointing and migration runner support resilience and future scaling.
+
+### Implementation Readiness Validation ✅
+
+**Decision Completeness:**
+- Critical decisions documented (data model, worker protocol, storage layout). Library choices are suggested but versions should be verified at implementation.
+
+**Structure Completeness:**
+- Directory tree and integration boundaries are specific and actionable for implementers and AI agents.
+
+**Pattern Completeness:**
+- Naming, format, communication and process patterns cover major conflict points; enforcement guidance provided (docs + linting recommendations).
+
+### Gap Analysis Results
+
+**Critical Gaps:**
+- Owners per FR are still `TBD` in `prd-acceptance` — assign owners before team handoff.
+- Explicit, pinned dependency versions for critical libraries (parser, rrule, sanitizer, idb) are not yet recorded; verify and pin during implementation.
+
+**Important Gaps:**
+- End-to-end test harness for large imports should be scaffolded (Playwright + sample `.ics` generator).
+- Migration test cases for IndexedDB migrations need to be written.
+
+**Nice-to-Have Gaps:**
+- Optional encrypted export workflow and opt‑in sync strategy (post-MVP).
+
+### Validation Issues & Resolutions
+
+- Issue: Missing FR owners. Resolution: assign owners in `prd-acceptance` or create backlog tasks for ownership assignment.
+- Issue: No pinned versions. Resolution: add `dependencies.md` and pin verified versions when starting implementation.
+- Issue: Testing harness absent. Resolution: scaffold `tests/e2e/import.spec.ts` and generator script for `.ics` test files.
+
+### Architecture Readiness Assessment
+
+**Overall Status:** READY FOR IMPLEMENTATION
+
+**Confidence Level:** High — core risks (import pipeline, storage, sanitization) are addressed; remaining items are operational (owners, tests, pinned deps).
+
+**Key Strengths:**
+- Clear import pipeline design with checkpointing and resilience.
+- Concrete project structure and enforcement patterns to prevent agent conflicts.
+- Privacy-first decisions (local storage, opt-in telemetry, sanitized debug exports).
+
+**Areas for Future Enhancement:**
+- Scaffold CI e2e import performance test and baseline metrics.
+- Consider encrypted export and optional sync only after MVP.
+- Finalize per-FR owners and acceptance test details.
+
+### Implementation Handoff
+
+**AI Agent Guidelines:**
+- Follow document decisions and patterns exactly; prefer `src/lib` services over direct storage access; use worker message protocol for import flows.
+
+**First Implementation Priority:**
+1. Implement canonical event schema and `src/lib/storage/idb.ts` with migration runner.
+2. Scaffold `src/workers/import.worker.ts` and implement streaming parser + batch writes (default batch 500).
+3. Build `src/features/import/ImportAssistant.tsx` to integrate worker and show `ImportReport`.
+
+**Starter Command (if creating project):**
+```bash
+npm create vite@latest planis -- --template react-ts
+```
+
+---
+
+Reply `C` to finalize and complete the architecture (I will append this content to the document and load `step-08-complete.md`), or `A`/`P` to address specific validation concerns now.
+
+## Completion Summary & Handoff
+
+### Congratulations
+
+Bravo — we have completed the Architecture workflow for Planis. Together we:
+
+- Analyzed project context and loaded all relevant input documents.
+- Selected the starter (`Vite + React + TypeScript`).
+- Defined core architectural decisions (data model, import pipeline, worker protocol, security and privacy constraints).
+- Established implementation patterns and enforcement rules to prevent agent conflicts.
+- Created a concrete project structure and integration boundaries.
+- Validated the architecture for coherence, requirements coverage, and implementation readiness.
+
+### Final Handoff Guidance
+
+1. First implementation tasks (priority):
+  - Implement `src/lib/storage/idb.ts` with migration runner and canonical event schema.
+  - Scaffold `src/workers/import.worker.ts` and the worker ↔ UI protocol.
+  - Build `src/features/import/ImportAssistant.tsx` and `ImportReport` UI.
+
+2. Immediate operational tasks:
+  - Assign owners for each FR in `prd-acceptance-Planis-2026-02-03.md`.
+  - Pin verified versions for critical libraries (`ical.js`, `rrule`, `dompurify`, `idb`).
+  - Scaffold e2e import tests and a `.ics` generator for performance validation.
+
+3. Documentation & enforcement:
+  - Publish `docs/architecture/patterns.md` and enable lint rules for naming where possible.
+  - Add `docs/architecture/developer-onboarding.md` with worker protocol examples and common pitfalls.
+
+### Workflow Status
+
+- `workflowType`: architecture
+- `lastStep`: 8
+- `status`: complete
+- `completedAt`: 2026-02-03T12:30:00Z
+
+---
+
+If you want, I can now:
+- Create the initial handoff artifacts (docs files, `dependencies.md`, and a basic `tests/e2e/import.spec.ts` scaffold).
+- Assign FR owners and update `prd-acceptance-Planis-2026-02-03.md` with them if you provide names or mapping.
+
+Que souhaitez‑vous que je fasse ensuite ? (répondez par l'option souhaitée)
+
 
 
 ## Starter Template Evaluation
