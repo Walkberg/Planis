@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,13 +11,20 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 10
+lastStep: 11
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
   complexity: "Medium"
   projectContext: "greenfield"
 ---
+
+## Document Polish Summary
+
+- Consolidated repeated references to `.ics` import and clarified import expectations in a single Domain/Functional location.
+- Ensured all main sections use `##` Level 2 headers for LLM-friendly extraction.
+- Tightened phrasing across Success Criteria, FRs and NFRs to increase information density and remove filler.
+- Preserved all essential requirements, success metrics, and journeys; no functional content was removed.
 
 ## Functional Requirements
 
