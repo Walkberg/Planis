@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2]
+stepsCompleted: [1, 2, 3]
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture-Planis-2026-02-03.md
@@ -420,19 +420,4 @@ So that accessibility regressions are detected early in CI.
 **Then** accessibility assertions (contrast, focus order, ARIA presence) pass and any violations are reported as test failures
 **And** a minimal set of end-to-end accessibility scenarios are included in `tests/e2e` (import flow, create/edit event, keyboard DnD).
 
-## Epic {{N}}: {{epic_title_N}}
 
-{{epic_goal_N}}
-
-### Story {{N}}.{{M}}: {{story_title_N_M}}
-
-As a {{user_type}},
-I want {{capability}},
-So that {{value_benefit}}.
-
-**Acceptance Criteria:**
-
-**Given** {{precondition}}
-**When** {{action}}
-**Then** {{expected_outcome}}
-**And** {{additional_criteria}}
