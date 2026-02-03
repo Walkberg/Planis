@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,13 +11,62 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 8
+lastStep: 9
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
   complexity: "Medium"
   projectContext: "greenfield"
 ---
+
+## Functional Requirements
+
+### Event Management
+
+- FR1: [User] can import a `.ics` file one-time and view an import report summarizing successes and errors.
+- FR2: [User] can create, edit and delete events with standard fields (title, time, duration, description, attendees, reminders).
+- FR3: [User] can define basic recurrence rules for events (daily, weekly, monthly).
+
+### Import & Recovery
+
+- FR4: [System] can parse a `.ics` file in background (Web Worker) and display import progress to the user.
+- FR5: [System] can perform partial imports when encountering malformed entries and present recovery options to the user.
+- FR6: [User] can export their calendar to a `.ics` file for backup.
+
+### Calendar Views & Navigation
+
+- FR7: [User] can view calendar in Day, Week and Month views.
+- FR8: [User] can navigate between dates and jump to a specific date.
+- FR9: [System] displays events with title, time, and status correctly in all views.
+
+### Scheduling UX (Drag & Drop)
+
+- FR10: [User] can create or move an event by drag & drop within the calendar interface.
+- FR11: [User] can complete or edit event details after a drag & drop action.
+
+### Notifications & Reminders
+
+- FR12: [User] can enable local notifications for upcoming events.
+- FR13: [System] delivers local notifications according to user preferences and event times.
+
+### Offline & Storage
+
+- FR14: [System] stores user data locally in `IndexedDB` and keeps data accessible offline.
+- FR15: [System] can resume an interrupted import or background processing after an application restart.
+
+### Accessibility & Settings
+
+- FR16: [System] supports keyboard navigation and ARIA roles for critical flows to meet WCAG AA for core tasks.
+- FR17: [User] can configure preferences such as notification settings, timezone, and default calendar view.
+
+### Support, Debug & Admin
+
+- FR18: [Support/User] can export a debug report of an import for diagnostics.
+- FR19: [Power User] can perform full local export/backup of the calendar data.
+
+### Functional Requirements Notes
+
+- Each FR is implementation-agnostic and testable; non-functional constraints (performance, security) will be defined in Step 10.
 
 
 ## Project Scoping & Phased Development
