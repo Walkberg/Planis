@@ -99,6 +99,29 @@ Required tests:
 |----|-------|----------|---------------------|----------------------|
 | FR1 | TBD | MUST | Given a valid `.ics`, when import completes, then import report shows counts and errors. | Worker + import report UI |
 | FR4 | TBD | MUST | Worker parses file and UI shows progress indicator; no main-thread freeze. | Web Worker, chunking |
+(Populate remaining FR rows from PRD)
+| FR | Owner | Priority | Acceptance Criteria | Implementation Notes |
+|----|-------|----------|---------------------|----------------------|
+| FR1 | Import Worker | MUST | Given a valid `.ics`, when import completes, then import report shows importedCount and failedCount and UI stayed responsive. | Web Worker + batch writes; import report UI |
+| FR2 | Frontend | MUST | Users can create, edit and delete events and see changes reflected in the calendar and persisted to IndexedDB within 2s. | CRUD UI + local persistence |
+| FR3 | Frontend | SHOULD | Users can set basic recurrence (daily/weekly/monthly) and occurrences appear correctly in calendar views. | Recurrence normalization library |
+| FR4 | Import Worker | MUST | `.ics` parsing runs in a Worker, reports progress, and does not block the main thread. | Web Worker + streaming parser |
+| FR5 | Import Worker | SHOULD | System imports valid entries, reports malformed entries with error details, and offers partial-recovery actions. | Partial-import UX + error reporting |
+| FR6 | Frontend | SHOULD | User can export current calendar to a `.ics` file and download it successfully. | Export routine, size/encoding checks |
+| FR7 | Frontend | MUST | Day/Week/Month views render events correctly and navigation between views functions without errors. | Calendar view components, view tests |
+| FR8 | Frontend | MUST | User can navigate between dates and jump to a specific date; view updates within performance budget. | Date picker + route handling |
+| FR9 | Frontend | MUST | Events display title, time, and status correctly in all views and in event details. | Event rendering tests |
+| FR10 | Frontend | MUST | Drag & drop creates or moves events and persists the change; undo available. | DnD handlers + persistence hooks |
+| FR11 | Frontend | MUST | After drag & drop, user can complete or edit event details and save changes persistently. | Event detail modal/form integration |
+| FR12 | Frontend | SHOULD | User can enable local notifications; permission requested only when enabling and setting is persisted. | Permissions flow + settings UI |
+| FR13 | Frontend | SHOULD | System delivers local notifications according to user preferences when permission granted. | Notification scheduling + local triggers |
+| FR14 | Frontend | MUST | All user calendar data is stored locally in IndexedDB and accessible offline. | IndexedDB schema + access layer |
+| FR15 | Import Worker | SHOULD | Interrupted imports can resume from last known position without duplicating events. | Import checkpointing + idempotent writes |
+| FR16 | Frontend | MUST | Core flows (onboarding, CRUD, DnD, import) are operable via keyboard and meet WCAG AA for tested scenarios. | Accessibility testing checklist |
+| FR17 | Frontend | SHOULD | User can configure preferences (timezone, default view, notifications) and changes persist. | Settings store + timezone handling |
+| FR18 | Support | SHOULD | Support can export a debug report for imports including errors, imported counts, and sample problematic entries. | Debug exporter + shareable artifact |
+| FR19 | Frontend | CAN | Power users can perform full local export/backup of calendar data; export succeeds for typical dataset sizes. | Full export workflow, size limits |
+(Populate remaining implementation notes and owners as team members are assigned)
 
 (Populate remaining FR rows from PRD)
 
