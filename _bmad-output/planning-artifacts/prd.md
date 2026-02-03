@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,7 +11,7 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 6
+lastStep: 7
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
@@ -137,6 +137,41 @@ Based on classification (`Productivity/Calendar`, complexity: Medium) and your a
 ### When to skip deep domain work
 
 - Domain step considered complete for medium complexity: no regulatory compliance needed and integrations limited to one‑time `.ics` import; proceed to innovation step.
+
+---
+
+## Project-Type Specific Requirements (Web app)
+
+### Project-Type Overview
+
+- Project type: **Web app (SPA)** — single-page application served to browsers with client-side routing and progressive enhancement for offline use.
+- SEO: Not required for MVP.
+- Real-time: Notifications for upcoming events required (browser Notification API); no full real-time collaboration needed for MVP.
+- Accessibility: Target **WCAG AA** for core flows.
+
+### Technical Architecture Considerations
+
+- Client: SPA with client-side routing, responsive design, and accessibility-first components.
+- Offline & Storage: Service Worker + `IndexedDB` for offline data and migration/import state; background sync or retries for long-running imports.
+- Import processing: Use Web Workers or streaming/chunked parsing to handle `.ics` imports up to ~10k events without blocking the UI; show progress and recovery options.
+- Notifications: Browser Notification API and the Permissions API; graceful fallback if notifications are denied.
+- Performance: Code-splitting, lazy-loading routes and calendar views, keep initial payload minimal; performance targets to keep interactive time-to-first-draw under 1s on typical desktops.
+
+### Implementation Considerations
+
+- Routing & State: Use a robust router and client-state solution (lightweight store or React context) to manage event editing flows and offline queues.
+- Parsing & Validation: Implement resilient `.ics` parser with validation and heuristics to salvage malformed entries; provide partial-import UX.
+- Accessibility: Semantic markup, ARIA roles for calendar grid, keyboard navigation for drag/drop and event creation, focus management for dialogs and forms.
+- Browser Support: Chrome, Edge, Firefox, Safari (recent versions); test on desktop and mobile browsers.
+- Security: Least-privilege permission requests (notifications), sanitize imported data before rendering, avoid remote code execution vectors.
+
+### Required Sections to Document
+
+- `platform_reqs` (browser support, offline capabilities)
+- `performance_targets` (import handling, UI responsiveness)
+- `accessibility_requirements` (WCAG AA checkpoints for MVP)
+- `notification_model` (permissions, fallback behavior)
+- `import_validation` (parsing, error handling, recovery)
 
 ---
 
