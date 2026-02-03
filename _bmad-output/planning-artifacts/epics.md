@@ -1,4 +1,4 @@
-stepsCompleted: [1, 2, 3, 4]
+stepsCompleted: [1, 2, 3, 4, 5]
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/architecture-Planis-2026-02-03.md
@@ -398,6 +398,24 @@ So that I can create and move events without a pointer device and understand cur
 As a screen-reader user,
 I want the calendar and event dialogs to expose meaningful semantic roles and labels,
 So that I can perceive and interact with events and controls effectively.
+
+**Acceptance Criteria:**
+
+**Given** the calendar or event dialog is open
+**When** a screen reader or assistive technology queries the UI
+**Then** the calendar grid exposes appropriate ARIA roles (grid, row, cell) and labels for dates and events
+**And** dialogs and form controls provide descriptive labels, error announcements, and clear keyboard focus order
+**And** interactive controls expose current state (expanded/collapsed, selected) via ARIA attributes
+
+## Next Steps
+
+- Finalize any missing implementation notes and map stories to sprint backlog.
+- Ensure `IndexedDB` schema and import worker stubs are available for engineering to begin implementation.
+- Trigger BMAD workflow to mark epics implemented and proceed to downstream tasks.
+
+---
+
+_Document generated/updated: 2026-02-03_
 
 **Acceptance Criteria:**
 
