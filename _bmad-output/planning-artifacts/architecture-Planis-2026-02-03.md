@@ -9,6 +9,14 @@ documentCounts:
   prdSections: 1
   diagrams: 0
 lastUpdatedStep: 1
+inputDocuments:
+  - _bmad-output/planning-artifacts/prd.md
+  - _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
+  - _bmad-output/planning-artifacts/ux-design-specification.md
+  - _bmad-output/planning-artifacts/prd-acceptance-Planis-2026-02-03.md
+  - _bmad-output/planning-artifacts/prd-validation-Planis-2026-02-03.md
+  - _bmad-output/planning-artifacts/import-threat-model-Planis-2026-02-03.md
+stepsCompleted: [1]
 ---
 
 # Architecture Decision Document — Planis
