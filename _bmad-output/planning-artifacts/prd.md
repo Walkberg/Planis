@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,7 +11,7 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 5
+lastStep: 6
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
