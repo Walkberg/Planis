@@ -22,7 +22,13 @@ interface DragInteractionContextType {
   isResizing: boolean | number;
   dragStart: DragState | null;
   dragEnd: DragState | null;
-  handleCellClick: (day: Date, hour: number, minutes: number) => void;
+  handleMouseDown: (
+    day: Date,
+    hour: number,
+    minutes: number,
+    e: React.MouseEvent,
+  ) => void;
+  handleMouseEnterCell: (day: Date, hour: number, minutes: number) => void;
   handleResizeStart: (event: CalendarEvent, e: React.MouseEvent) => void;
 }
 
@@ -53,27 +59,29 @@ export const DragInteractionProvider: React.FC<
   const [dragEnd, setDragEnd] = useState<DragState | null>(null);
   const [isResizing, setIsResizing] = useState<boolean | number>(false);
 
-  const handleCellClick = (day: Date, hour: number, minutes: number) => {
-    // Supprimer les drafts existants avant d'en créer un nouveau
-    removeDrafts();
+  const handleMouseDown = (
+    day: Date,
+    hour: number,
+    minutes: number,
+    e: React.MouseEvent,
+  ) => {
+    if ((e.target as HTMLElement).closest(".event")) return;
 
     const startTime = new Date(day);
     startTime.setHours(hour, minutes, 0, 0);
 
-    const endTime = new Date(startTime);
-    endTime.setMinutes(startTime.getMinutes() + 30);
+    setIsDragging(true);
+    setDragStart({ day, hour, startTime });
+    setDragEnd({ day, hour, startTime });
+  };
 
-    const newEvent: CalendarEvent = {
-      id: Date.now(),
-      title: "",
-      start: startTime,
-      end: endTime,
-      color: "#ff6b35",
-      isDraft: true,
-    };
+  const handleMouseEnterCell = (day: Date, hour: number, minutes: number) => {
+    if (!isDragging || !dragStart) return;
 
-    addEvent(newEvent);
-    setSelectedEvent(newEvent);
+    const endTime = new Date(day);
+    endTime.setHours(hour, minutes, 0, 0);
+
+    setDragEnd({ day, hour, endTime });
   };
 
   const handleResizeStart = (event: CalendarEvent, e: React.MouseEvent) => {
@@ -91,6 +99,51 @@ export const DragInteractionProvider: React.FC<
   };
 
   useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (!isDragging || !dragStart) return;
+
+      removeDrafts();
+
+      let endTime: Date;
+
+      if (dragEnd?.endTime && dragEnd.endTime > dragStart.startTime!) {
+        endTime = dragEnd.endTime;
+      } else {
+        endTime = new Date(dragStart.startTime!);
+        endTime.setMinutes(endTime.getMinutes() + 30);
+      }
+
+      const newEvent: CalendarEvent = {
+        id: Date.now(),
+        title: "",
+        start: dragStart.startTime!,
+        end: endTime,
+        color: "#ff6b35",
+        isDraft: true,
+      };
+
+      addEvent(newEvent);
+      setSelectedEvent(newEvent);
+
+      setIsDragging(false);
+      setDragStart(null);
+      setDragEnd(null);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mouseup", handleGlobalMouseUp);
+      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+    }
+  }, [
+    isDragging,
+    dragStart,
+    dragEnd,
+    addEvent,
+    setSelectedEvent,
+    removeDrafts,
+  ]);
+
+  useEffect(() => {
     if (isResizing) {
       window.addEventListener("mousemove", handleResizeMove);
       window.addEventListener("mouseup", handleResizeEnd);
@@ -106,7 +159,8 @@ export const DragInteractionProvider: React.FC<
     isResizing,
     dragStart,
     dragEnd,
-    handleCellClick,
+    handleMouseDown,
+    handleMouseEnterCell,
     handleResizeStart,
   };
 
