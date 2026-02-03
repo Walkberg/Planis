@@ -188,16 +188,147 @@ So that I can inspect my schedule at different granularities and find events qui
 **And** switching between views updates the layout without errors and within the perceived performance budget (<2s)
 **And** the views handle typical event densities (including multi-day events and overlapping events) correctly.
 
+### Story 2.2: Create Event - Quick Add
+
+As a user,
+I want to create an event quickly from the calendar (quick-add) with minimal fields,
+So that I can capture events fast without interrupting my workflow.
+
+**Acceptance Criteria:**
+
+**Given** the calendar is visible
+**When** the user triggers quick-add (double-click or keyboard shortcut) and fills minimal fields (title, start time)
+**Then** the event is created and persisted to `IndexedDB` and appears in the current view within 2 seconds
+**And** the quick-add provides validation for required fields and shows inline errors
+And** the user can open the full event editor to add details (description, attendees, reminders) after creation.
+
+### Story 2.3: Drag & Drop - Move & Snap
+
+As a user,
+I want to drag and drop events on the calendar to change their time or move them between days, and have the event snap to sensible time increments,
+So that I can quickly reschedule events with direct manipulation.
+
+**Acceptance Criteria:**
+
+**Given** an event is visible in the calendar
+**When** the user drags the event to a new time slot or day and drops it
+**Then** the event's start/end times update accordingly and persist to `IndexedDB`
+**And** the drop operation snaps to configured increments (e.g., 15 minutes) and handles overlapping events gracefully
+**And** an undo option is presented and keyboard-accessible equivalents allow moving events without a pointer device.
+
+### Story 2.4: Edit Event - Full Editor & Validation
+
+As a user,
+I want to open a full event editor to modify all event fields (title, time, attendees, description, recurrence, reminders),
+So that I can make detailed changes and save them reliably.
+
+**Acceptance Criteria:**
+
+**Given** an event exists in the calendar
+**When** the user opens the full editor and updates fields
+**Then** changes are validated, saved to `IndexedDB`, and reflected immediately in the calendar view
+**And** validation errors are shown inline for missing/invalid fields (e.g., end before start)
+**And** editing recurrence rules updates occurrences correctly and there is a clear flow to edit a single occurrence vs the series.
+
 
 ### Epic 3: Persistance & Offline
 Objectif utilisateur : Stocker et retrouver ses données localement, reprendre imports interrompus, exporter/sauvegarder.
 **FRs couverts:** FR6, FR14, FR15, FR19
 **Notes impl.:** IndexedDB schema + migrations, export `.ics`, PWA/Service Worker.
 
+### Story 3.1: Storage - IndexedDB Schema & Migration Runner
+
+As a developer,
+I want a canonical `IndexedDB` schema and a versioned migration runner,
+So that data can be stored consistently, upgraded safely, and imported data remains compatible across app versions.
+
+**Acceptance Criteria:**
+
+**Given** the application starts or a migration is required
+**When** the storage layer initializes
+**Then** the `events`, `imports`, and `settings` object stores exist with defined indexes
+**And** the migration runner applies pending migrations in order and records the current schema version
+**And** migrations include tests or verification steps to ensure data integrity (no silent data loss)
+**And** the storage API exposes idempotent upsert semantics used by the import worker.
+
+### Story 3.2: Export & Backup - `.ics` Export
+
+As a user,
+I want to export my calendar to a `.ics` file for backup and sharing,
+So that I can preserve or transfer my calendar data outside the app.
+
+**Acceptance Criteria:**
+
+**Given** the user requests an export
+**When** the system generates an export
+**Then** the exported `.ics` file contains the canonical event data for the selected scope (all calendars or selected ranges)
+**And** the export operation completes without blocking the UI and provides a downloadable file
+**And** the export can be performed locally without sending data externally by default (privacy-first)
+**And** power-user export options allow including additional metadata or encrypted exports when explicitly requested.
+
+### Story 3.3: Resume Import & Conflict Resolution
+
+As a user,
+I want an interrupted import to resume from the last successful checkpoint and handle duplicate/conflicting events safely,
+So that long imports can be paused/restarted without creating duplicates or data loss.
+
+**Acceptance Criteria:**
+
+**Given** an import was interrupted mid-run (e.g., app closed, crash, or network issue)
+**When** the user restarts the app and resumes the import
+**Then** the import resumes from the last recorded checkpoint and continues processing remaining batches
+**And** the system detects duplicates using the canonical key (`uid + startUtc`) and applies idempotent upsert semantics
+**And** conflicts (e.g., differing event details for same UID+start) surface a lightweight resolution UI with options: keep existing, replace with imported, or create duplicate with suffix
+**And** resume operations report progress and update the ImportReport accordingly.
+
+
+
 ### Epic 4: Notifications & Préférences
 Objectif utilisateur : Configurer rappels et préférences (timezone, vue par défaut).
 **FRs couverts:** FR12, FR13, FR17
 **Notes impl.:** Notification API, permission on opt-in, settings persistence.
+
+### Story 4.1: Notifications - Permission & Scheduling
+
+As a user,
+I want to enable local notifications and grant permission when I opt in,
+So that I can receive reminders for upcoming events.
+
+**Acceptance Criteria:**
+
+**Given** the user toggles reminders for an event or enables notifications in settings
+**When** notifications are enabled
+**Then** the app requests Notification permission only when the user opts in
+**And** scheduled reminders are registered with the browser's Notification API or Service Worker where supported
+**And** reminder delivery respects user preferences and does not send anything without explicit opt-in (privacy-first).
+
+### Story 4.2: Notifications - Reminders Engine & Retry
+
+As a user,
+I want scheduled reminders to trigger reliably and retry if delivery fails,
+So that I can trust that I will be notified about important events.
+
+**Acceptance Criteria:**
+
+**Given** a reminder is scheduled for an event
+**When** the reminder time arrives
+**Then** the system triggers a local notification with event summary and deep-link to the event
+**And** failed delivery attempts are retried according to a backoff policy and logged in diagnostics (opt-in)
+**And** the system respects Do Not Disturb / permission denials gracefully.
+
+### Story 4.3: Preferences - Timezone & Default View
+
+As a user,
+I want to set my timezone and default calendar view (Day/Week/Month) in preferences,
+So that the calendar displays times and layouts that match my preferences.
+
+**Acceptance Criteria:**
+
+**Given** the user opens Preferences
+**When** the user updates timezone or default view
+**Then** changes persist to `settings` store in `IndexedDB` and apply immediately to calendar rendering
+**And** timezone changes update event displays consistently across views and recurrence handling.
+
 
 ### Epic 5: Support, Diagnostics & Debug
 Objectif utilisateur/support : Fournir rapports d'import et outils debug pour résoudre incidents.
