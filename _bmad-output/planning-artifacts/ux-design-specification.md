@@ -1,6 +1,8 @@
 
----
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+lastStep: 14
+workflowComplete: true
+completedAt: 2026-02-03T00:00:00Z
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
@@ -473,5 +475,109 @@ J'ai ajouté la stratégie de composants au document. Voulez‑vous :
 - `A` Advanced Elicitation — approfondir les specs composants
 - `P` Party Mode — solliciter perspectives techniques
 - `C` Continuer — sauvegarder et charger `step-12-ux-patterns.md`
+
+## UX Consistency Patterns
+
+### Analyse succincte
+
+Les patterns critiques pour Planis (priorité haute) :
+- Hiérarchie des boutons
+- Patterns de feedback (toasts, inline, summary)
+- Formulaires et validation
+- Navigation (views / filters)
+- Modales / overlays
+- États vides et chargement
+- Recherche & filtrage
+
+Ces patterns doivent garantir : cohérence visuelle via les tokens Tailwind, conformité WCAG AA, et comportements mobiles/desktop cohérents.
+
+### Patterns définis (résumé)
+
+#### Button Hierarchy
+**Quand :** actions primaires/secondaires (import, commit, undo).
+**Visuel :** primaire = `--color-primary` (#ff6b35), secondaire = outline `--color-accent` (#00D9FF), ghost = transparent.
+**Comportement :** états hover/active/focus distincts, spinner pour actions longues.
+**Accessibilité :** 44×44 min., `aria-label`, focus visible.
+
+#### Feedback Patterns
+Toasts avec option `Undo` pour actions critiques ; erreurs d'import affichées en liste avec actions (retry/export debug) ; inline validation pour formulaires.
+Use `role="status"` et `role="alert"` selon le contexte.
+
+#### Form Patterns
+Inline validation + summary d'erreurs. Mobile : single-column, large touch targets, progressive disclosure pour options avancées.
+
+#### Navigation Patterns
+Vue principale (Jour/Semaine/Mois), filtres persistants, import et support accessibles depuis la barre principale. URL reflecte l'état pour deep‑links.
+
+#### Modal & Overlay Patterns
+Favoriser l'inline quick-edit ; si modale, trap focus, accessible et dismissible.
+
+#### Empty & Loading States
+Actionable empty states avec CTA clair (importer, données d'exemple). Skeletons pour la grille, progress bar pour import.
+
+#### Search & Filtering
+Recherche incrémentale (debounce), chips filtrants, état des filtres sauvegardé, résultats accessibles au clavier.
+
+### Intégration technique
+- Mapper chaque pattern sur un composant Tailwind + wrapper React (ex. `<Button variant="primary" />`).
+- Documenter chaque pattern dans Storybook avec exemples visuels, snippets et checklist A11y.
+
+### Documentation (template)
+Pour chaque pattern inclure : `When to use`, `Visual`, `Behavior`, `Accessibility`, `Mobile considerations`, `Variants`, `Implementation notes`.
+
+---
+
+J'ai ajouté ces patterns au document. Que voulez‑vous faire maintenant ?
+
+- `A` : Advanced Elicitation — approfondir ces patterns
+- `P` : Party Mode — solliciter perspectives multiples
+- `C` : Continuer — je sauvegarde ces patterns et je charge `step-13-responsive-accessibility.md`
+ 
+## Responsive Design & Accessibility
+
+### Analyse (résumé)
+
+Le produit doit fonctionner de manière fiable et accessible sur mobile, tablette et bureau. Les priorités sont : mobile-first pour les interactions critiques (import, preview, édition rapide), breakpoints clairs pour repenser l'utilisation de l'espace, et conformité WCAG AA. Les décisions visuelles (Direction B) impactent les contrastes et la gestion des focus — vérifier ratios de contraste et tailles cibles.
+
+### Responsive Strategy
+
+- Mobile-first : prioriser les chemins critiques (import preview, quick-edit) en single-column.
+- Tablet : interface tactile optimisée, gestuelles simplifiées, densité d'information modérée.
+- Desktop : utiliser espace horizontal pour panneau d'import / aperçu côte-à-côte, multi-column pour tableaux et diagnostics.
+
+### Breakpoint Strategy
+
+- Mobile: up to 767px — single column, bottom-friendly CTAs.
+- Tablet: 768px–1023px — two-column behaviors for preview + editor.
+- Desktop: 1024px+ — multi-column layouts, side panels, denser grids.
+- Utiliser breakpoints Tailwind standards et ajuster si besoin pour cas critiques (ex. large calendar grid).
+
+### Accessibility Strategy
+
+- Cible de conformité : WCAG AA minimum.
+- Points clefs : contraste texte/background >= 4.5:1, focus visibles, keyboard operability for DnD fallbacks, ARIA roles pour grid et live regions, semantic HTML.
+- Touch targets >= 44×44px, skip-links pour navigation rapide, option high-contrast mode.
+
+### Testing Strategy
+
+- Automatisé : axe-core, Lighthouse accessibility audits dans CI.
+- Manuel : keyboard-only flows, screen reader tests (VoiceOver, NVDA), color-blindness checks.
+- Device testing : on real devices (iOS/Android) and common browsers (Chrome, Firefox, Safari, Edge).
+
+### Implementation Guidelines
+
+- Mobile-first CSS, use `rem` and responsive utilities in Tailwind.
+- Semantic markup for calendar grid (`role="grid"`, `role="gridcell"`) and proper labeling.
+- Expose focus management hooks in components (e.g., `onFocusRestore`) and document keyboard patterns for DnD.
+- Ensure progress and status elements use ARIA roles (`role="progressbar"`, `aria-live="polite"`).
+
+---
+
+J'ai préparé et ajouté la section "Responsive Design & Accessibility" au document. Que voulez‑vous faire maintenant ?
+
+- `A` : Advanced Elicitation — approfondir la stratégie responsive/accessibilité
+- `P` : Party Mode — solliciter perspectives multiples
+- `C` : Continuer — sauvegarder ce contenu et charger `step-14-complete.md`
+
 
 
