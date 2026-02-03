@@ -12,6 +12,10 @@ export const CalendarEdit = () => {
     }
   }, [selectedEvent]);
 
+  const handleClose = () => {
+    setSelectedEvent(null);
+  };
+
   if (!selectedEvent) return null;
 
   return (
@@ -81,7 +85,7 @@ export const CalendarEdit = () => {
 
         <div className="flex gap-2.5 mt-5">
           <button
-            onClick={() => setSelectedEvent(null)}
+            onClick={handleClose}
             className="flex-1 bg-neo-cyan border-[3px] border-black rounded-[10px] p-4 cursor-pointer font-space font-bold text-sm uppercase shadow-neo-md transition-all duration-200 hover:bg-[#00B8D9]"
           >
             Fermer

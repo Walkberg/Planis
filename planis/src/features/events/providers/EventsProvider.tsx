@@ -11,6 +11,7 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   color: string;
+  isDraft?: boolean;
 }
 
 interface EventsContextType {
@@ -20,6 +21,7 @@ interface EventsContextType {
   addEvent: (event: CalendarEvent) => void;
   updateEvent: (updates: Partial<CalendarEvent>) => void;
   deleteEvent: () => void;
+  removeDrafts: () => void;
   getEventStyle: (
     event: CalendarEvent,
     day: Date,
@@ -51,13 +53,23 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
     setEvents((prevEvents) => [...prevEvents, event]);
   };
 
+  const removeDrafts = () => {
+    setEvents((prevEvents) => prevEvents.filter((e) => !e.isDraft));
+  };
+
   const updateEvent = (updates: Partial<CalendarEvent>) => {
     if (!selectedEvent) return;
 
+    // Si on met à jour le titre d'un draft et qu'il n'est pas vide, valider le draft
+    const updatedEvent = { ...selectedEvent, ...updates };
+    if (selectedEvent.isDraft && updates.title && updates.title.trim()) {
+      updatedEvent.isDraft = false;
+    }
+
     setEvents(
-      events.map((e) => (e.id === selectedEvent.id ? { ...e, ...updates } : e)),
+      events.map((e) => (e.id === selectedEvent.id ? updatedEvent : e)),
     );
-    setSelectedEvent({ ...selectedEvent, ...updates });
+    setSelectedEvent(updatedEvent);
   };
 
   const deleteEvent = () => {
@@ -91,6 +103,7 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
     addEvent,
     updateEvent,
     deleteEvent,
+    removeDrafts,
     getEventStyle,
   };
 

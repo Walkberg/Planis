@@ -47,13 +47,16 @@ interface DragInteractionProviderProps {
 export const DragInteractionProvider: React.FC<
   DragInteractionProviderProps
 > = ({ children }) => {
-  const { addEvent, setSelectedEvent } = useEvents();
+  const { addEvent, setSelectedEvent, removeDrafts } = useEvents();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<DragState | null>(null);
   const [dragEnd, setDragEnd] = useState<DragState | null>(null);
   const [isResizing, setIsResizing] = useState<boolean | number>(false);
 
   const handleCellClick = (day: Date, hour: number, minutes: number) => {
+    // Supprimer les drafts existants avant d'en créer un nouveau
+    removeDrafts();
+
     const startTime = new Date(day);
     startTime.setHours(hour, minutes, 0, 0);
 
@@ -66,6 +69,7 @@ export const DragInteractionProvider: React.FC<
       start: startTime,
       end: endTime,
       color: "#ff6b35",
+      isDraft: true,
     };
 
     addEvent(newEvent);
