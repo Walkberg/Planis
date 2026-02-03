@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,12 +11,52 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 7
+lastStep: 8
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
   complexity: "Medium"
   projectContext: "greenfield"
+---
+
+
+## Project Scoping & Phased Development
+
+### MVP Strategy & Philosophy
+
+**MVP Approach:** Problem‑solving MVP — prouver que l'import `.ics` + gestion d'événements fournit une valeur immédiate.
+
+**Resource Requirements:** 1 full‑stack dev (React/TS), 1 designer (UX + accessibility), 1 QA/devops part‑time.
+
+### MVP Feature Set (Phase 1)
+
+**Core User Journeys Supported:** onboarding import `.ics`, create/edit events, drag & drop scheduling, basic recurrence, local notifications.
+
+**Must‑Have Capabilities:**
+- Import `.ics` one‑time with progress & recovery
+- Create/edit events (CRUD) + basic recurrence
+- Calendar views: day / week / month
+- Drag & drop event creation/edit
+- Local storage via `IndexedDB` + import/export `.ics`
+- Local notifications
+- Accessibility basics (WCAG AA)
+
+### Post‑MVP (Phase 2)
+
+- Templates, advanced recurrence rules, offline UX improvements, performance scaling, packaging as PWA/Electron.
+
+### Expansion (Phase 3)
+
+- Encrypted exports, optional sync opt‑in, integrations with other calendars (opt‑in).
+
+### Risk Mitigation Strategy
+
+**Technical Risks:** large imports — mitigate using Web Workers, chunked parsing, and progress UI.
+
+**Market Risks:** low adoption — validate with onboarding flow and measure import completion and DAU.
+
+**Resource Risks:** limited team — focus MVP on essentials and automate testing and release.
+
 ---
 
 # Product Requirements Document - Planis
