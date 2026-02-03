@@ -44,12 +44,10 @@ export const CalendarView = () => {
         }}
       >
         <div className="sticky top-0 bg-neo-yellow border-r-[3px] border-b-[3px] border-black z-[2]" />
-
-        {/* Day headers */}
         {displayDays.map((day, i) => (
           <div
             key={i}
-            className={`sticky top-0 border-[3px] border-black p-4 text-center font-bold z-[2] rounded-[10px] ${
+            className={`sticky top-0 border-[3px] border-black p-4 text-center font-bold z-[2]  ${
               i === 0 ? "border-l-[3px]" : "border-l-0"
             } ${
               isToday(day) ? "bg-neo-orange shadow-[0_4px_0_#000]" : "bg-white"
@@ -61,8 +59,6 @@ export const CalendarView = () => {
             <div className="text-2xl mt-1">{day.getDate()}</div>
           </div>
         ))}
-
-        {/* Hour rows */}
         {hours.map((hour) =>
           displayDays.map((day, dayIndex) => (
             <CalendarHour

@@ -36,7 +36,7 @@ export const CalendarHour = ({
       <div
         onMouseDown={(e) => handleMouseDown(day, hour, e)}
         onMouseEnter={() => handleMouseEnterCell(day, hour)}
-        className={`border-b border-b-gray-300 min-h-[60px] relative cursor-pointer bg-white transition-colors duration-100 hover:bg-gray-100 ${
+        className={`border-b border-b-gray-300 min-h-[60px] relative cursor-pointer  transition-colors duration-100 hover:bg-gray-100 ${
           isLastDay
             ? "border-r-[3px] border-r-black"
             : "border-r border-r-gray-200"
