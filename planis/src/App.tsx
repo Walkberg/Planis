@@ -1,7 +1,7 @@
-import { CalendarPreview } from "./components/CalendarPreview";
-import { CalendarHeader } from "./components/CalendarHeader";
-import { CalendarView } from "./components/CalendarView";
-import { CalendarEdit } from "./components/CalendarEdit";
+import { CalendarPreview } from "./features/calendar/components/CalendarPreview";
+import { CalendarHeader } from "./features/calendar/components/CalendarHeader";
+import { CalendarView } from "./features/calendar/components/CalendarView";
+import { CalendarEdit } from "./features/events/components/CalendarEdit";
 
 export const CalendarApp = () => {
   return (
