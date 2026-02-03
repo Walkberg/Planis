@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,7 +11,7 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 9
+lastStep: 10
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
@@ -38,6 +38,42 @@ classification:
 - FR7: [User] can view calendar in Day, Week and Month views.
 - FR8: [User] can navigate between dates and jump to a specific date.
 - FR9: [System] displays events with title, time, and status correctly in all views.
+
+## Non-Functional Requirements
+
+### Performance
+
+- NFR-P1: UI interactions (navigation, event open/edit) should respond within 2 seconds on typical desktop devices.
+- NFR-P2: `.ics` import processing for up to 10k events should complete within 10 seconds using background/streaming parsing without blocking the main UI thread.
+
+### Security & Privacy
+
+- NFR-S1: User calendar data is stored only locally by default (IndexedDB); no cloud sync occurs without explicit opt-in.
+- NFR-S2: Imported `.ics` data must be validated and sanitized before rendering to prevent injection vectors.
+- NFR-S3: All network requests (assets, updates) use HTTPS; sensitive operations require least-privilege permission requests.
+- NFR-PV1: No telemetry or analytics sent without explicit opt-in; any telemetry must be anonymized.
+
+### Reliability & Availability
+
+- NFR-R1: Application should support offline read/write for core flows (viewing and editing events) with eventual persistence to `IndexedDB`.
+- NFR-R2: Interrupted imports or background tasks must be resumable after app restart.
+
+### Scalability
+
+- NFR-SC1: System designed to support initial target DAU = 50 and planned to handle 10x growth with <10% degradation in responsiveness (architecture decisions deferred to implementation).
+
+### Accessibility
+
+- NFR-A1: Core user flows (onboarding, event CRUD, drag & drop, import) must meet WCAG AA checkpoints.
+
+### Integration
+
+- NFR-I1: MVP supports only one-time `.ics` import/export; no CalDAV or continuous sync required for initial release.
+
+### Monitoring & Support
+
+- NFR-M1: Provide local debug/export logs for import failures to assist support and diagnostics.
+
 
 ### Scheduling UX (Drag & Drop)
 
