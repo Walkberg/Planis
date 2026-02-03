@@ -18,12 +18,13 @@ export const CalendarHour = ({
   const { isSameDay } = useCalendar();
   const { events, selectedEvent, setSelectedEvent, getEventStyle } =
     useEvents();
-  const { handleMouseDown, handleMouseEnterCell, handleResizeStart } =
-    useDragInteraction();
+  const { handleCellClick, handleResizeStart } = useDragInteraction();
 
   const formatTime = (hour: number) => {
     return `${hour.toString().padStart(2, "0")}:00`;
   };
+
+  const quarters = [0, 15, 30, 45];
 
   return (
     <>
@@ -34,14 +35,25 @@ export const CalendarHour = ({
       )}
 
       <div
-        onMouseDown={(e) => handleMouseDown(day, hour, e)}
-        onMouseEnter={() => handleMouseEnterCell(day, hour)}
-        className={`border-b border-b-gray-300 min-h-[60px] relative cursor-pointer  transition-colors duration-100 hover:bg-gray-100 ${
+        className={`border-b border-b-gray-300 min-h-[60px] relative grid grid-rows-4 ${
           isLastDay
             ? "border-r-[3px] border-r-black"
             : "border-r border-r-gray-200"
         }`}
       >
+        {quarters.map((minutes, idx) => (
+          <div
+            key={idx}
+            onClick={(e) => {
+              if (!(e.target as HTMLElement).closest(".event")) {
+                handleCellClick(day, hour, minutes);
+              }
+            }}
+            className={`cursor-pointer transition-colors duration-100 hover:bg-gray-100 ${
+              idx < 3 ? "border-b border-b-gray-200" : ""
+            }`}
+          />
+        ))}
         {events.map((event) => {
           const style = getEventStyle(event, day, isSameDay);
           if (!style) return null;

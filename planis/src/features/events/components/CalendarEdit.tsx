@@ -1,8 +1,16 @@
+import { useEffect, useRef } from "react";
 import { useEvents } from "../providers/EventsProvider";
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =
     useEvents();
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (selectedEvent && titleInputRef.current) {
+      titleInputRef.current.focus();
+    }
+  }, [selectedEvent]);
 
   if (!selectedEvent) return null;
 
@@ -18,9 +26,11 @@ export const CalendarEdit = () => {
             Titre
           </label>
           <input
+            ref={titleInputRef}
             type="text"
             value={selectedEvent.title}
             onChange={(e) => updateEvent({ title: e.target.value })}
+            placeholder="Entrez le titre de l'événement..."
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>

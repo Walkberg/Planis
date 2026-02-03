@@ -22,8 +22,7 @@ interface DragInteractionContextType {
   isResizing: boolean | number;
   dragStart: DragState | null;
   dragEnd: DragState | null;
-  handleMouseDown: (day: Date, hour: number, e: React.MouseEvent) => void;
-  handleMouseEnterCell: (day: Date, hour: number) => void;
+  handleCellClick: (day: Date, hour: number, minutes: number) => void;
   handleResizeStart: (event: CalendarEvent, e: React.MouseEvent) => void;
 }
 
@@ -54,24 +53,23 @@ export const DragInteractionProvider: React.FC<
   const [dragEnd, setDragEnd] = useState<DragState | null>(null);
   const [isResizing, setIsResizing] = useState<boolean | number>(false);
 
-  const handleMouseDown = (day: Date, hour: number, e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest(".event")) return;
-
+  const handleCellClick = (day: Date, hour: number, minutes: number) => {
     const startTime = new Date(day);
-    startTime.setHours(hour, 0, 0, 0);
+    startTime.setHours(hour, minutes, 0, 0);
 
-    setIsDragging(true);
-    setDragStart({ day, hour, startTime });
-    setDragEnd({ day, hour, startTime });
-  };
+    const endTime = new Date(startTime);
+    endTime.setMinutes(startTime.getMinutes() + 30); // Événement de 30 minutes
 
-  const handleMouseEnterCell = (day: Date, hour: number) => {
-    if (!isDragging || !dragStart) return;
+    const newEvent: CalendarEvent = {
+      id: Date.now(),
+      title: "",
+      start: startTime,
+      end: endTime,
+      color: "#ff6b35",
+    };
 
-    const endTime = new Date(day);
-    endTime.setHours(hour + 1, 0, 0, 0);
-
-    setDragEnd({ day, hour, endTime });
+    addEvent(newEvent);
+    setSelectedEvent(newEvent);
   };
 
   const handleResizeStart = (event: CalendarEvent, e: React.MouseEvent) => {
@@ -89,37 +87,7 @@ export const DragInteractionProvider: React.FC<
     setIsResizing(false);
   };
 
-  // Handle drag completion
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      if (!isDragging || !dragStart || !dragEnd) return;
-
-      if (
-        dragEnd.endTime &&
-        dragStart.startTime &&
-        dragEnd.endTime > dragStart.startTime
-      ) {
-        const newEvent: CalendarEvent = {
-          id: Date.now(),
-          title: "Nouvel événement",
-          start: dragStart.startTime,
-          end: dragEnd.endTime,
-          color: "#ff6b35",
-        };
-        addEvent(newEvent);
-        setSelectedEvent(newEvent);
-      }
-
-      setIsDragging(false);
-      setDragStart(null);
-      setDragEnd(null);
-    };
-
-    if (isDragging) {
-      window.addEventListener("mouseup", handleGlobalMouseUp);
-      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
-    }
-  }, [isDragging, dragStart, dragEnd, addEvent, setSelectedEvent]);
+  // Pas besoin de handle drag completion avec le système de clic
 
   // Handle resize events
   useEffect(() => {
@@ -138,8 +106,7 @@ export const DragInteractionProvider: React.FC<
     isResizing,
     dragStart,
     dragEnd,
-    handleMouseDown,
-    handleMouseEnterCell,
+    handleCellClick,
     handleResizeStart,
   };
 
