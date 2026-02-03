@@ -335,10 +335,90 @@ Objectif utilisateur/support : Fournir rapports d'import et outils debug pour r�
 **FRs couverts:** FR18
 **Notes impl.:** Debug export (sanitized par défaut), import reports, support UX.
 
+### Story 5.1: ImportReport - UI & Downloadable Report
+
+As a support user,
+I want a clear ImportReport UI summarizing importedCount, failedCount, and sample failures with links to download reports,
+So that I can quickly diagnose import issues and share actionable information with users.
+
+**Acceptance Criteria:**
+
+**Given** an import has completed (or partially completed)
+**When** the user opens the ImportReport
+**Then** the report shows counts, sample failed entries, timestamps, and contextual error messages
+**And** the user can download a sanitized debug report (or full report with explicit consent) as a file for sharing with support.
+
+### Story 5.2: Debug Export - Sanitization & Consent
+
+As a user,
+I want exported debug packages to be sanitized by default and only include full payloads with explicit consent,
+So that privacy is preserved while enabling effective troubleshooting.
+
+**Acceptance Criteria:**
+
+**Given** the user requests a debug export
+**When** the export is generated
+**Then** the default exported package omits or masks PII and sensitive fields
+**And** the UI explains what is sanitized and offers an explicit consent flow to include full payloads if the user chooses
+**And** the exported package includes import samples, error logs, and environment metadata helpful for debugging.
+
+### Story 5.3: Support Flow - Reproduce + Retry Actions
+
+As a support agent,
+I want reproducible steps and in-app retry actions (replay import, apply fix, reimport subset),
+So that I can resolve user issues without manual data transfer.
+
+**Acceptance Criteria:**
+
+**Given** a reported import failure
+**When** the support agent opens the debug package or ImportReport
+**Then** the UI presents a reproducible reproduction script or steps and provides actions: replay import for selected entries, apply automated fixes (where safe), or trigger user-facing retry flows
+**And** all actions are logged to the diagnostics store (opt-in) for audit and further analysis.
+
+
 ### Epic 6: Accessibilité & Qualité UX
 Objectif utilisateur : Assurer que les flux critiques sont accessibles et conformes WCAG AA.
 **FRs couverts:** FR16, (NFR-A1 appliquée transversalement)
 **Notes impl.:** Keyboard DnD equivalents, ARIA roles, focus management.
+
+### Story 6.1: Accessibility - Keyboard DnD & Focus Management
+
+As a user with keyboard-only input,
+I want to perform drag & drop equivalents and navigate the calendar using the keyboard with clear focus states,
+So that I can create and move events without a pointer device and understand current focus.
+
+**Acceptance Criteria:**
+
+**Given** the calendar is focused
+**When** the user activates keyboard DnD or navigates cells
+**Then** keyboard commands move selection and allow starting a drag, moving to a target cell, and dropping
+**And** all interactive elements have visible focus indicators and ARIA attributes describing state and actions.
+
+### Story 6.2: Accessibility - Screen Reader Semantics & ARIA
+
+As a screen-reader user,
+I want the calendar and event dialogs to expose meaningful semantic roles and labels,
+So that I can perceive and interact with events and controls effectively.
+
+**Acceptance Criteria:**
+
+**Given** the calendar is loaded
+**When** a screen reader queries elements
+**Then** calendar grid cells, events, and dialogs expose appropriate ARIA roles, names, and properties
+**And** announcements are triggered for dynamic actions (event created, moved, import completed) to inform assistive tech users.
+
+### Story 6.3: Quality - WCAG AA Verification & Automated Tests
+
+As a QA engineer,
+I want automated checks and test cases that verify WCAG AA for core flows (import, event CRUD, DnD),
+So that accessibility regressions are detected early in CI.
+
+**Acceptance Criteria:**
+
+**Given** the CI pipeline runs tests
+**When** core flows are executed in tests
+**Then** accessibility assertions (contrast, focus order, ARIA presence) pass and any violations are reported as test failures
+**And** a minimal set of end-to-end accessibility scenarios are included in `tests/e2e` (import flow, create/edit event, keyboard DnD).
 
 ## Epic {{N}}: {{epic_title_N}}
 
