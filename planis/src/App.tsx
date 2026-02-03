@@ -1,197 +1,46 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef } from "react";
+import { useCalendar } from "./features/calendar/providers/CalendarProvider";
+import { useEvents } from "./features/events/providers/EventsProvider";
+import { useDragInteraction } from "./features/interactions/providers/DragInteractionProvider";
 
 export const CalendarApp = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [viewDays, setViewDays] = useState(7);
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(null);
-  const [dragEnd, setDragEnd] = useState(null);
-  const [isResizing, setIsResizing] = useState(false);
   const calendarRef = useRef(null);
 
+  const {
+    currentDate,
+    currentTime,
+    viewDays,
+    setCurrentDate,
+    setViewDays,
+    changeMonth,
+    getDisplayDays,
+    getMonthCalendar,
+    isSameDay,
+    isToday,
+  } = useCalendar();
+
+  const {
+    events,
+    selectedEvent,
+    setSelectedEvent,
+    updateEvent,
+    deleteEvent,
+    getEventStyle,
+  } = useEvents();
+
+  const {
+    isDragging,
+    handleMouseDown,
+    handleMouseEnterCell,
+    handleResizeStart,
+  } = useDragInteraction();
+
   const hours = Array.from({ length: 24 }, (_, i) => i);
-
-  const getDisplayDays = () => {
-    const days = [];
-    const start = new Date(currentDate);
-    start.setHours(0, 0, 0, 0);
-
-    if (viewDays === 1) {
-      days.push(new Date(start));
-    } else {
-      const dayOfWeek = start.getDay();
-      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-      start.setDate(start.getDate() + diff);
-
-      for (let i = 0; i < viewDays; i++) {
-        const day = new Date(start);
-        day.setDate(start.getDate() + i);
-        days.push(day);
-      }
-    }
-    return days;
-  };
-
   const displayDays = getDisplayDays();
-
-  const getMonthCalendar = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-
-    const days = [];
-    const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-
-    for (let i = startDay - 1; i >= 0; i--) {
-      const date = new Date(year, month, -i);
-      days.push({ date, isCurrentMonth: false });
-    }
-
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      const date = new Date(year, month, i);
-      days.push({ date, isCurrentMonth: true });
-    }
-
-    const remaining = 42 - days.length;
-    for (let i = 1; i <= remaining; i++) {
-      const date = new Date(year, month + 1, i);
-      days.push({ date, isCurrentMonth: false });
-    }
-
-    return days;
-  };
-
   const monthCalendar = getMonthCalendar();
 
-  const formatTime = (hour) => {
+  const formatTime = (hour: number) => {
     return `${hour.toString().padStart(2, "0")}:00`;
-  };
-
-  const isSameDay = (date1, date2) => {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
-  };
-
-  const isToday = (date) => {
-    return isSameDay(date, new Date());
-  };
-
-  const handleMouseDown = (day, hour, e) => {
-    if (e.target.closest(".event")) return;
-
-    const startTime = new Date(day);
-    startTime.setHours(hour, 0, 0, 0);
-
-    setIsDragging(true);
-    setDragStart({ day, hour, startTime });
-    setDragEnd({ day, hour, startTime });
-  };
-
-  const handleMouseEnterCell = (day, hour) => {
-    if (!isDragging || !dragStart) return;
-
-    const endTime = new Date(day);
-    endTime.setHours(hour + 1, 0, 0, 0);
-
-    setDragEnd({ day, hour, endTime });
-  };
-
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      if (!isDragging || !dragStart || !dragEnd) return;
-
-      if (dragEnd.endTime > dragStart.startTime) {
-        const newEvent = {
-          id: Date.now(),
-          title: "Nouvel événement",
-          start: dragStart.startTime,
-          end: dragEnd.endTime,
-          color: "#ff6b35",
-        };
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
-        setSelectedEvent(newEvent);
-      }
-
-      setIsDragging(false);
-      setDragStart(null);
-      setDragEnd(null);
-    };
-
-    if (isDragging) {
-      window.addEventListener("mouseup", handleGlobalMouseUp);
-      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
-    }
-  }, [isDragging, dragStart, dragEnd]);
-
-  const getEventStyle = (event, day) => {
-    if (!isSameDay(event.start, day)) return null;
-
-    const startHour = event.start.getHours() + event.start.getMinutes() / 60;
-    const endHour = event.end.getHours() + event.end.getMinutes() / 60;
-    const duration = endHour - startHour;
-
-    return {
-      top: `${startHour * 60}px`,
-      height: `${duration * 60}px`,
-    };
-  };
-
-  const handleResizeStart = (event, e) => {
-    e.stopPropagation();
-    setIsResizing(event.id);
-    setSelectedEvent(event);
-  };
-
-  const handleResizeMove = (e) => {
-    if (!isResizing) return;
-  };
-
-  const handleResizeEnd = () => {
-    setIsResizing(false);
-  };
-
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener("mousemove", handleResizeMove);
-      window.addEventListener("mouseup", handleResizeEnd);
-      return () => {
-        window.removeEventListener("mousemove", handleResizeMove);
-        window.removeEventListener("mouseup", handleResizeEnd);
-      };
-    }
-  }, [isResizing]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const updateEvent = (updates) => {
-    setEvents(
-      events.map((e) => (e.id === selectedEvent.id ? { ...e, ...updates } : e)),
-    );
-    setSelectedEvent({ ...selectedEvent, ...updates });
-  };
-
-  const deleteEvent = () => {
-    setEvents(events.filter((e) => e.id !== selectedEvent.id));
-    setSelectedEvent(null);
-  };
-
-  const changeMonth = (delta) => {
-    const newDate = new Date(currentDate);
-    newDate.setMonth(newDate.getMonth() + delta);
-    setCurrentDate(newDate);
   };
 
   return (
@@ -578,7 +427,7 @@ export const CalendarApp = () => {
                     }}
                   >
                     {events.map((event) => {
-                      const style = getEventStyle(event, day);
+                      const style = getEventStyle(event, day, isSameDay);
                       if (!style) return null;
 
                       return (
