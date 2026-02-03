@@ -40,6 +40,18 @@ export const CalendarEdit = () => {
         </div>
 
         <div>
+          <label className="flex items-center gap-2 font-bold mb-3 text-sm uppercase cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedEvent.isAllDay || false}
+              onChange={(e) => updateEvent({ isAllDay: e.target.checked })}
+              className="w-5 h-5 cursor-pointer accent-neo-purple"
+            />
+            Toute la journée
+          </label>
+        </div>
+
+        <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Date de début
           </label>

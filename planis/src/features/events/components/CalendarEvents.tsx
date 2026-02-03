@@ -16,22 +16,24 @@ export const CalendarEvents = ({
 
   return (
     <>
-      {events.map((event) => {
-        const dayIndex = displayDays.findIndex((day) =>
-          isSameDay(event.start, day),
-        );
-        if (dayIndex === -1) return null;
+      {events
+        .filter((event) => !event.isAllDay)
+        .map((event) => {
+          const dayIndex = displayDays.findIndex((day) =>
+            isSameDay(event.start, day),
+          );
+          if (dayIndex === -1) return null;
 
-        return (
-          <CalendarEvent
-            key={event.id}
-            event={event}
-            dayIndex={dayIndex}
-            displayDaysLength={displayDays.length}
-            calendarRef={calendarRef}
-          />
-        );
-      })}
+          return (
+            <CalendarEvent
+              key={event.id}
+              event={event}
+              dayIndex={dayIndex}
+              displayDaysLength={displayDays.length}
+              calendarRef={calendarRef}
+            />
+          );
+        })}
     </>
   );
 };

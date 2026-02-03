@@ -12,6 +12,7 @@ export interface CalendarEvent {
   end: Date;
   color: string;
   isDraft?: boolean;
+  isAllDay?: boolean;
 }
 
 interface EventsContextType {
