@@ -11,7 +11,27 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 11
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+inputDocuments:
+ 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
+workflowType: 'prd'
+date: 2026-02-03
+author: walkberg
+createdAt: 2026-02-03T12:05:00Z
+documentCounts:
+ 	productBriefs: 1
+ 	research: 0
+ 	brainstorming: 0
+ 	projectDocs: 0
+lastStep: 12
+completed: true
+completedAt: 2026-02-03T12:10:00Z
+validation:
+  validated: true
+  validatedAt: 2026-02-03T12:10:00Z
+  status: "pass-with-issues"
+  score: 87
+  report: _bmad-output/planning-artifacts/prd-validation-Planis-2026-02-03.md
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
