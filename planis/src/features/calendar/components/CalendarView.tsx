@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useCalendar } from "../providers/CalendarProvider";
 import { CalendarHour } from "./CalendarHour";
 import { CalendarEvents } from "../../events/components/CalendarEvents";
+import { CalendarDragGhost } from "./CalendarDragGhost";
 
 export const CalendarView = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
@@ -71,6 +72,9 @@ export const CalendarView = () => {
           )),
         )}
       </div>
+
+      <CalendarDragGhost displayDays={displayDays} calendarRef={calendarRef} />
+
       <CalendarEvents displayDays={displayDays} calendarRef={calendarRef} />
     </div>
   );
