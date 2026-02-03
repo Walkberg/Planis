@@ -45,6 +45,7 @@ export const CalendarHour = ({
           <div
             key={idx}
             onClick={(e) => {
+              e.stopPropagation();
               if (!(e.target as HTMLElement).closest(".event")) {
                 handleCellClick(day, hour, minutes);
               }

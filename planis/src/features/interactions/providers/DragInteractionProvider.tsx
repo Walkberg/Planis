@@ -58,7 +58,7 @@ export const DragInteractionProvider: React.FC<
     startTime.setHours(hour, minutes, 0, 0);
 
     const endTime = new Date(startTime);
-    endTime.setMinutes(startTime.getMinutes() + 30); // Événement de 30 minutes
+    endTime.setMinutes(startTime.getMinutes() + 30);
 
     const newEvent: CalendarEvent = {
       id: Date.now(),
@@ -80,16 +80,12 @@ export const DragInteractionProvider: React.FC<
 
   const handleResizeMove = () => {
     if (!isResizing) return;
-    // TODO: Implement resize logic
   };
 
   const handleResizeEnd = () => {
     setIsResizing(false);
   };
 
-  // Pas besoin de handle drag completion avec le système de clic
-
-  // Handle resize events
   useEffect(() => {
     if (isResizing) {
       window.addEventListener("mousemove", handleResizeMove);
