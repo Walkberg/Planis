@@ -1,6 +1,6 @@
 
 ---
-stepsCompleted: [1, 2, 3, 4, 5]
+stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
@@ -125,7 +125,7 @@ J'ai sauvegardé cette section dans le document.
 
 ### Inspiring Products Analysis
 
-- Google Calendar / Apple Calendar / Outlook — onboarding and import UIs are familiar to many users; they make import straightforward but vary in clarity for recovery from errors.
+- Google Calendar / Apple Calendar / Outlook / Notion Calendar — onboarding and import UIs are familiar to many users; they make import straightforward but vary in clarity for recovery from errors.
 - Fantastical — excellent quick-add and clear event presentation; strong immediate usefulness and delight for quick entry.
 - Notion / Trello — workspace and card patterns demonstrate progressive disclosure and fast inline edits useful for complex info.
 
@@ -158,5 +158,320 @@ Que voulez‑vous faire maintenant ?
 - `A` : Advanced Elicitation (approfondir certains points)
 - `P` : Party Mode (inviter perspectives multiples)
 - `C` : Continuer (je sauvegarde cette section dans le document et j'ouvre `step-06-design-system.md`)
+
+## Design System Foundation
+
+### 1.1 Design System Choice
+
+Custom design system (Neo‑Brutalism) with Tailwind utilities for components — unique visual identity while keeping developer ergonomics via utility classes.
+
+### Rationale for Selection
+
+- Besoin d'une identité visuelle forte et reconnaissable → choix `custom`.
+- Utiliser Tailwind permet d'accélérer l'implémentation des composants tout en gardant un contrôle fin sur le style.
+- Facilite maintenance et thèmes via `tailwind.config.js` (design tokens centralisés).
+
+### Implementation Approach
+
+- Base: Tailwind CSS (utility-first) + custom component layer (réutilisable) pour patterns spécifiques (calendar grid, import assistant, event cards).
+- Design tokens: définir couleurs, spacing, radii, typography dans `tailwind.config.js` sous `theme.extend`.
+- Font: importer `Space Mono` via Google Fonts et appliquer comme font-display pour l'UI.
+- Create a small `styles/base.css` that includes the font import and sets root variables for colors.
+
+### Neo Brutalism Visual Tokens
+
+- Background: `#FFFDE7`
+- Accent / Primary: `#ff6b35`
+- Accent / Secondary: `#00D9FF` (hover: `#00B8D9`)
+- Accent / Tertiary: `#7B2FBE`
+- Accent / Quaternary: `#F7931E`
+
+### Example Tailwind config notes
+
+- Extend the `colors` palette with the tokens above.
+- Set `fontFamily: { mono: ['Space Mono', 'monospace'] }`.
+- Add custom utilities or components for heavy, high-contrast borders and drop shadows to achieve neo‑brutalist aesthetic.
+
+### Custom Component Guidance
+
+- Buttons: strong rectangular forms, thick borders, high-contrast fills for primary actions (`#ff6b35`), secondary using `#00D9FF` with hover `#00B8D9`.
+- Cards / Panels: flat surfaces with bold edge strokes, large padding, and clear hierarchy via color accents.
+- Calendar grid: semantic grid with pronounced cell borders and accessible focus outlines.
+
+---
+
+Si vous voulez, je peux maintenant :
+
+- Scaffolder `tailwind.config.js` + `styles/base.css` et un exemple de `Button` composant.
+- Ou simplement enregistrer cette décision et passer à l'étape suivante.
+
+Que préférez‑vous ? (répondez `scaffold` ou `suivant`)
+
+## Defining Core Experience
+
+### 2.1 Defining Experience
+
+Le defining experience de Planis est : "Importer son calendrier puis modifier rapidement un événement via drag & drop et édition inline". Si cette boucle est fluide (import → aperçu → édition rapide), l'utilisateur ressentira maîtrise et valeur immédiate.
+
+### 2.2 User Mental Model
+
+- Les utilisateurs attendent que l'import restaure leurs événements tels qu'ils apparaissaient ailleurs (même ordre, titres et heures). Ils pensent en termes de jours/semaines et s'attendent à manipuler les événements directement sur la grille.
+- Mental model clé : calendrier = grille temporelle; actions directes sur la grille (sélection, drag, drop, quick-edit).
+
+### 2.3 Success Criteria
+
+- Import visible et usable : premier événement visible dans l'UI < 5s après import (preview). 
+- Drag & drop operable via souris et clavier, avec édition persistée à l'enregistrement (<2s perceived latency).
+- Partial-import recovery: user can identify and correct failed entries via the import assistant.
+
+### 2.4 Novel UX Patterns
+
+- Inline Quick-Edit Card: small inline form anchored to cell after DnD or double-click, with primary fields and a link to full editor.
+- Import Preview Selector: show sample events and allow toggling inclusion per-event-group (by date or source) before commit.
+
+### 2.5 Experience Mechanics
+
+1. Initiation: User uploads `.ics` via file picker or drag/drop onto import area; UI shows parsed summary instantly.
+2. Interaction: Worker parses file and streams sample events to preview; user toggles groups to include/exclude and presses Commit.
+3. Feedback: Progress bar, counts (imported/failed), and live preview update; errors surfaced with actions (Retry / Export Debug).
+4. Completion: First visible events rendered; user can click/drag to edit — inline card appears to finalize details; Undo available for recent actions.
+
+---
+
+J'ai ajouté la définition de l'expérience au document. Je charge `step-08-visual-foundation.md` pour la suite.
+
+## Visual Design Foundation
+
+### Color System
+
+- Background: `#FFFDE7` (page background)
+- Primary (Accent): `#ff6b35`
+- Secondary (Accent): `#00D9FF` — hover: `#00B8D9`
+- Tertiary (Accent): `#7B2FBE`
+- Quaternary (Accent): `#F7931E`
+
+Semantic mapping suggestion:
+- `--color-bg` = `#FFFDE7`
+- `--color-primary` = `#ff6b35`
+- `--color-accent` = `#00D9FF`
+- `--color-accent-hover` = `#00B8D9`
+- `--color-ink` = `#111827` (ensure readable text contrast)
+
+### Typography
+
+- Font: `Space Mono` (import via https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap)
+- Apply as primary UI type: `font-family: 'Space Mono', monospace;` for headings and UI labels; use system sans fallback for long-form if needed.
+- Type scale (suggestion): H1 32px, H2 24px, H3 18px, Body 16px, Small 14px.
+
+### Spacing & Layout
+
+- Base spacing unit: `8px` (use multiples for layout: 8 / 16 / 24 / 32)
+- Grid: responsive single-column on small, 12-column fluid grid for desktop if needed for panels.
+- Use generous padding on cards and panels to match neo‑brutalist heavy forms.
+
+### Accessibility Considerations
+
+- Verify text contrast on `#FFFDE7` background; prefer dark ink `#111827` for body text to meet WCAG AA.
+- Interactive controls must have focus outlines and visible focus states (high-contrast border or outline using `--color-accent`).
+- Buttons must have accessible names, keyboard operability, and 44x44px touch targets.
+
+### Implementation Notes (Tailwind)
+
+- In `tailwind.config.js` extend `theme.colors` with the tokens above and set `fontFamily.mono` to `['Space Mono','monospace']`.
+- Provide CSS variables in `styles/base.css` for the semantic tokens and import the Google Font there.
+- Add utilities for neo‑brutalist styles: thick borders (`ring-2` / `border-4`), high-contrast fills, and bold box-shadows.
+
+---
+
+J'ai ajouté la fondation visuelle au document. Si vous voulez, je peux maintenant scaffolder les fichiers Tailwind (`tailwind.config.js`, `styles/base.css`) et un exemple de composant (`Button.tsx`).
+
+## Design Direction Decision
+
+### Design Directions Explored
+
+- Direction A — Neo‑Brutalist (heavy): Bold borders, high-contrast fills, pronounced grid, strong use of `#ff6b35` and `#7B2FBE` for accents; dense, emphatic UI.
+- Direction B — Neo‑Brutalist (airy): Same brutalist tokens with more white space and softer shadows to improve readability on `#FFFDE7`.
+- Direction C — Functional Minimal: Prioritize clarity and performance; restrained accents (`#00D9FF`) with focus on quick-add and inline edits.
+
+### Chosen Direction (proposal)
+
+- Recommend starting with **Direction B (Neo‑Brutalist Airy)**: preserves the bold identity while improving legibility and accessibility on the chosen background.
+
+### Design Rationale
+
+- Balances the unique visual identity you requested with the practical needs of a calendar app (readability, scanability, and accessibility).
+- Supports emotional goals (confidence, calm) by using softer spacing and clear feedback while keeping the brand punch through accents.
+
+### Implementation Approach
+
+- Create HTML design direction showcase for quick comparison at `_bmad-output/planning-artifacts/ux-design-directions.html` when you ask me to generate it.
+- Implement the chosen direction as a Tailwind theme with component variants for Buttons, Cards, Calendar Grid, and Import Assistant.
+
+---
+
+J'ai sauvegardé cette décision dans le document et je charge `step-10-user-journeys.md` pour la suite.
+
+## User Journey Flows
+
+### Journey 1 — Onboarding & `.ics` Import (Primary)
+
+Description: User imports a `.ics` during onboarding to migrate calendar data and expects a clear preview, progress feedback, and recovery for malformed entries.
+
+Mermaid diagram:
+
+```mermaid
+flowchart TD
+  A[Start: Open Import] --> B[Select .ics or drag/drop]
+  B --> C{File accepted?}
+  C -- No --> C1[Show error: invalid file]
+  C1 --> B
+  C -- Yes --> D[Start Worker parse]
+  D --> E[Stream preview sample events]
+  E --> F[User reviews preview]
+  F --> G{User commits selection?}
+  G -- No --> H[Adjust selection / exclude groups]
+  H --> F
+  G -- Yes --> I[Commit → Worker writes batches]
+  I --> J[Progress updates & ImportReport]
+  J --> K{Failures?}
+  K -- Yes --> L[Show failed entries + Recovery actions (retry/export debug)]
+  K -- No --> M[Render first events, show success]
+  M --> Z[End]
+```
+
+Success criteria:
+- Preview visible within 5s on target device.
+- Import completes without blocking UI; progress visible.
+- User can recover or export debug for failed entries.
+
+---
+
+### Journey 2 — Create/Edit Event (Drag & Drop → Inline Edit)
+
+Description: User creates or moves an event directly on the calendar grid and finalizes details via an inline quick-edit card.
+
+Mermaid diagram:
+
+```mermaid
+flowchart TD
+  A[Start on Calendar View] --> B[User drags from empty cell or selects event]
+  B --> C{Drag or click?}
+  C -- Drag --> D[Place event → show Inline Quick-Edit]
+  C -- Click --> E[Open Inline Quick-Edit]
+  D --> F[User edits primary fields (title/time)]
+  E --> F
+  F --> G{Save or Cancel}
+  G -- Save --> H[Persist to IndexedDB (fast write)]
+  H --> I[Show toast + Undo option]
+  G -- Cancel --> J[Revert visual move]
+  I --> Z[End]
+```
+
+Success criteria:
+- Drag & drop + inline edit complete and persisted with perceived latency <2s.
+- Keyboard accessible equivalents exist for DnD and inline editing.
+- Undo available for recent changes.
+
+---
+
+### Journey 3 — Support & Debug (Export Debug)
+
+Description: When import fails or user reports missing events, support flow provides an exportable debug package and clear steps for recovery.
+
+Mermaid diagram:
+
+```mermaid
+flowchart TD
+  A[User reports issue] --> B[Open Support / Diagnostics]
+  B --> C[Generate ImportReport + sample failed entries]
+  C --> D{Include full payload?}
+  D -- No --> E[Generate sanitized debug export]
+  D -- Yes --> F[Generate full debug export (user consent)]
+  E --> G[Provide download / share instructions]
+  F --> G
+  G --> H[Support reviews and suggests retry or fixes]
+  H --> Z[End]
+```
+
+Success criteria:
+- Support can obtain actionable debug data without exposing PII by default.
+- User guided through retry or partial-recovery steps.
+
+---
+
+### Journey Patterns
+
+- Entry points: file picker, drag/drop, keyboard shortcuts — support all.
+- Progressive disclosure: show minimal info by default, allow advanced options for power users.
+- Idempotent writes and checkpointing for import resume.
+
+### Flow Optimization Principles
+
+- Minimize steps to first value (preview, first event visible quickly).
+- Provide immediate, human‑readable feedback for failures with clear recovery actions.
+- Ensure all interactive flows have keyboard and screen‑reader accessible alternatives.
+
+Que voulez‑vous faire ensuite ?
+
+- `A` : Advanced Elicitation (approfondir ces parcours)
+- `P` : Party Mode (inviter perspectives multiples)
+- `C` : Continuer — je sauvegarde ces parcours dans le document et charge `step-11-component-strategy.md`
+
+## Component Strategy
+
+### Design System Components
+
+Using the chosen approach (Custom + Tailwind), foundation components come from Tailwind utilities. We'll rely on Tailwind for low-level utilities and implement a small component layer for reusable UI primitives (Button, Card, Input, Modal, Badge).
+
+### Custom Components (needed)
+
+- `CalendarGrid` — semantic grid, accessible cells, keyboard drag/drop handlers, focus management.
+- `ImportAssistant` — file drop area, preview list, commit controls, progress UI, recovery actions.
+- `InlineQuickEdit` — compact editor anchored to a grid cell for quick edits with Save/Cancel and keyboard support.
+- `EventCard` — summary view for events with variants for small/large and status badges.
+- `NotificationBadge` / `Toast` — transient messages with undo actions.
+- `DebugExport` — support utility to generate sanitized debug packages.
+
+### Component Specifications (summary)
+
+#### `Button`
+**Purpose:** Primary action surface.
+**Variants:** primary (`#ff6b35`), secondary (`#00D9FF`), ghost.
+**States:** default, hover, active, focus, disabled.
+**Accessibility:** `aria-pressed` where applicable, keyboard focus, 44x44 minimum target.
+
+#### `CalendarGrid`
+**Purpose:** Display time cells and events.
+**Anatomy:** grid, cell, event element, grid header.
+**States:** empty, occupied, selected, focused, drag-over.
+**Accessibility:** ARIA grid roles, keyboard navigation (arrow keys), drag/drop fallbacks.
+
+#### `ImportAssistant`
+**Purpose:** Guide `.ics` import and recovery.
+**Features:** file validation, streaming preview, include/exclude toggles, commit, progress bar, error list.
+**Accessibility:** descriptive labels, progress semantics, error summaries linked to items.
+
+### Component Implementation Strategy
+
+- Build components as React + TypeScript function components in `src/components`.
+- Use Tailwind for styling; extract common classes into small `ui/*` component wrapper utilities.
+- Expose props for accessibility hooks (id, aria labels, keyboard handlers).
+- Document each component with Storybook stories and include accessibility checks (axe).
+
+### Implementation Roadmap
+
+**Phase 1 - Core (MVP):** `Button`, `Input`, `Toast`, `CalendarGrid (basic)`, `InlineQuickEdit`, `ImportAssistant (preview + commit)`.
+
+**Phase 2 - Polishing:** `EventCard` variants, `DebugExport`, improved keyboard DnD, accessibility testing and fixes.
+
+**Phase 3 - Enhancements:** performance tuning for large imports, animations, additional component variants.
+
+---
+
+J'ai ajouté la stratégie de composants au document. Voulez‑vous :
+
+- `A` Advanced Elicitation — approfondir les specs composants
+- `P` Party Mode — solliciter perspectives techniques
+- `C` Continuer — sauvegarder et charger `step-12-ux-patterns.md`
 
 
