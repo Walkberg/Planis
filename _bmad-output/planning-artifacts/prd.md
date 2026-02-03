@@ -1,5 +1,5 @@
 ---
-stepsCompleted: [1, 2, 3, 4]
+stepsCompleted: [1, 2, 3, 4, 5]
 inputDocuments:
 	- _bmad-output/planning-artifacts/product-brief-Planis-2026-02-03.md
 workflowType: 'prd'
@@ -11,7 +11,7 @@ documentCounts:
 	research: 0
 	brainstorming: 0
 	projectDocs: 0
-lastStep: 4
+lastStep: 5
 classification:
   projectType: "Web app"
   domain: "Productivity/Calendar"
@@ -109,4 +109,35 @@ classification:
 
 - Couverture minimale : onboarding import fiable, UI drag & drop réactive, import asynchrone avec progress, validation et recovery, outils de support, export/restore simple.
 - Ces parcours révèlent exigences fonctionnelles et non‑fonctionnelles qui guideront le découpage MVP et les priorités techniques.
+
+## Domain-Specific Requirements
+
+Based on classification (`Productivity/Calendar`, complexity: Medium) and your answers:
+
+### Compliance & Regulatory
+
+- No additional regulations required (confirmed: none).
+
+### Integration & Data Flow
+
+- Import model: one‑time `.ics` import only (no CalDAV or continuous sync required for MVP).
+- Export: simple `.ics` export/backup supported; optional encrypted export is a future feature.
+
+### Technical Constraints
+
+- Storage: local storage via `IndexedDB` (no mandatory encryption at rest per user confirmation).
+- Import performance target: handle imports up to ~10k events; aim for processing < 10s without blocking the UI (use background/streaming processing).
+- Support modern browsers (Chrome, Edge, Firefox, Safari) and offline usage.
+
+### Risk & Mitigations
+
+- Risk: Very large imports may exceed device memory or CPU limits — mitigate via chunked/streaming parsing and progress UI.
+- Risk: Malformed `.ics` files — mitigate via validation, heuristics, and a recovery UI with partial import and user-facing error explanations.
+
+### When to skip deep domain work
+
+- Domain step considered complete for medium complexity: no regulatory compliance needed and integrations limited to one‑time `.ics` import; proceed to innovation step.
+
+---
+
 
