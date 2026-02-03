@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import { useCalendar } from "../providers/CalendarProvider";
 import { CalendarHour } from "./CalendarHour";
+import { CalendarEvents } from "../../events/components/CalendarEvents";
 
 export const CalendarView = () => {
-  const calendarRef = useRef(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
   const { currentTime, getDisplayDays, isToday } = useCalendar();
   const displayDays = getDisplayDays();
   const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -13,7 +14,6 @@ export const CalendarView = () => {
       ref={calendarRef}
       className="flex-1 overflow-auto bg-neo-yellow relative"
     >
-      {/* Current time indicator */}
       {(() => {
         const now = currentTime;
         const currentHour = now.getHours();
@@ -71,6 +71,7 @@ export const CalendarView = () => {
           )),
         )}
       </div>
+      <CalendarEvents displayDays={displayDays} calendarRef={calendarRef} />
     </div>
   );
 };

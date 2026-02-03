@@ -1,5 +1,3 @@
-import { useCalendar } from "../providers/CalendarProvider";
-import { useEvents } from "../../events/providers/EventsProvider";
 import { useDragInteraction } from "../../interactions/providers/DragInteractionProvider";
 
 interface CalendarHourProps {
@@ -15,10 +13,7 @@ export const CalendarHour = ({
   dayIndex,
   isLastDay,
 }: CalendarHourProps) => {
-  const { isSameDay } = useCalendar();
-  const { events, selectedEvent, setSelectedEvent, getEventStyle } =
-    useEvents();
-  const { handleCellClick, handleResizeStart } = useDragInteraction();
+  const { handleCellClick } = useDragInteraction();
 
   const formatTime = (hour: number) => {
     return `${hour.toString().padStart(2, "0")}:00`;
@@ -55,54 +50,6 @@ export const CalendarHour = ({
             }`}
           />
         ))}
-        {events.map((event) => {
-          const style = getEventStyle(event, day, isSameDay);
-          if (!style) return null;
-
-          return (
-            <div
-              key={event.id}
-              className={`event absolute left-1 right-1 border-[3px] border-black rounded-[10px] p-2 cursor-pointer transition-all duration-200 ${
-                selectedEvent?.id === event.id
-                  ? "shadow-neo-md scale-[1.02] z-[10]"
-                  : "shadow-neo z-[5]"
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedEvent(event);
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-              }}
-              onMouseUp={(e) => {
-                e.stopPropagation();
-              }}
-              style={{
-                ...style,
-                background: event.color,
-              }}
-            >
-              <div className="font-bold text-xs mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
-                {event.title}
-              </div>
-              <div className="text-[10px]">
-                {event.start.toLocaleTimeString("fr-FR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                -{" "}
-                {event.end.toLocaleTimeString("fr-FR", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
-              <div
-                onMouseDown={(e) => handleResizeStart(event, e)}
-                className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize bg-black opacity-30"
-              />
-            </div>
-          );
-        })}
       </div>
     </>
   );
