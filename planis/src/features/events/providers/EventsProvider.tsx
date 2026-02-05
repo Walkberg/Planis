@@ -61,7 +61,6 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
   const updateEvent = (updates: Partial<CalendarEvent>) => {
     if (!selectedEvent) return;
 
-    // Si on met à jour le titre d'un draft et qu'il n'est pas vide, valider le draft
     const updatedEvent = { ...selectedEvent, ...updates };
     if (selectedEvent.isDraft && updates.title && updates.title.trim()) {
       updatedEvent.isDraft = false;
