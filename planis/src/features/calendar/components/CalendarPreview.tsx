@@ -1,4 +1,5 @@
 import { useCalendar } from "../providers/CalendarProvider";
+import { ConfigListSidebar } from "../../configs/components/ConfigListSidebar";
 
 const DAY_OF_WEEK = ["L", "M", "M", "J", "V", "S", "D"];
 
@@ -63,6 +64,10 @@ export const CalendarPreview = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="mt-5">
+        <ConfigListSidebar />
       </div>
     </div>
   );

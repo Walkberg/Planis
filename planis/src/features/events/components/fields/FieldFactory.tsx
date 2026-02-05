@@ -115,7 +115,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({
       );
 
     default:
-      console.warn(`Unsupported field type: ${field.type}`);
+      console.warn(`Unsupported field type: ${(field as any).type}`);
       return null;
   }
 };

@@ -220,17 +220,6 @@ export const ConfigEditor: React.FC = () => {
         <div className="border-t-4 border-black pt-4 mt-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold uppercase text-sm">Champs dynamiques</h3>
-            <button
-              onClick={handleAddField}
-              disabled={isSystemConfig}
-              className={`bg-neo-green border-[3px] border-black rounded-lg px-3 py-2 font-bold text-sm uppercase shadow-neo-md transition-all ${
-                isSystemConfig
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-[#2ecc71]"
-              }`}
-            >
-              + Ajouter un champ
-            </button>
           </div>
 
           {formData.fieldConfigs.length > 0 ? (
@@ -249,6 +238,17 @@ export const ConfigEditor: React.FC = () => {
               Aucun champ dynamique défini
             </div>
           )}
+          <button
+            onClick={handleAddField}
+            disabled={isSystemConfig}
+            className={`bg-neo-green w-full border-[3px] border-black rounded-lg px-3 py-2 font-bold text-sm uppercase shadow-neo-md transition-all ${
+              isSystemConfig
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-[#2ecc71]"
+            }`}
+          >
+            + Ajouter un champ
+          </button>
         </div>
       </div>
       <div className="flex gap-2 mt-4 pt-4 border-t-4 border-black">
