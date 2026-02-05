@@ -6,7 +6,8 @@ export type FieldType =
   | "boolean"
   | "textarea"
   | "color"
-  | "checklist";
+  | "checklist"
+  | "counter";
 
 export interface SelectOption {
   value: string;
@@ -20,7 +21,8 @@ export type FieldConfig =
   | DateFieldConfig
   | BooleanFieldConfig
   | ColorFieldConfig
-  | ChecklistFieldConfig;
+  | ChecklistFieldConfig
+  | CounterFieldConfig;
 
 export interface BaseFieldConfig {
   id: string;
@@ -61,4 +63,9 @@ export type ColorFieldConfig = BaseFieldConfig & {
 export type ChecklistFieldConfig = BaseFieldConfig & {
   type: "checklist";
   options: SelectOption[];
+};
+
+export type CounterFieldConfig = BaseFieldConfig & {
+  type: "counter";
+  scope: "config" | "event"; // "config" = partagé par tous les événements de cette config, "event" = un compteur par événement
 };

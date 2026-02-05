@@ -1,17 +1,21 @@
-import React from 'react';
-import type { FieldConfig } from '../../../types/FieldConfig';
-import { FieldFactory } from './fields/FieldFactory';
+import React from "react";
+import type { FieldConfig } from "../../../types/FieldConfig";
+import { FieldFactory } from "./fields/FieldFactory";
 
 interface DynamicFieldsRendererProps {
   fieldConfigs: FieldConfig[];
   values: Record<string, any>;
   onChange: (key: string, value: any) => void;
+  eventId: string;
+  configId: string;
 }
 
 export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
   fieldConfigs,
   values,
   onChange,
+  eventId,
+  configId,
 }) => {
   if (fieldConfigs.length === 0) {
     return null;
@@ -24,12 +28,13 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           <FieldFactory
             key={field.id}
             field={field}
-            value={values[field.key] ?? field.defaultValue ?? ''}
+            value={values[field.key] ?? field.defaultValue ?? ""}
             onChange={(value) => onChange(field.key, value)}
+            eventId={eventId}
+            configId={configId}
           />
         ))}
       </div>
     </div>
   );
 };
-

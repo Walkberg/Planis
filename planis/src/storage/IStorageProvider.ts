@@ -1,5 +1,6 @@
 import type { EventConfig } from "../types/EventConfig";
 import type { CalendarEvent } from "../types";
+import type { Counter } from "../types/Counter";
 
 export interface IStorageProvider {
   initialize(): Promise<void>;
@@ -16,4 +17,11 @@ export interface IStorageProvider {
   deleteEvent(id: string): Promise<void>;
 
   getEventsByConfigId(configId: string): Promise<CalendarEvent[]>;
+
+  getCounter(id: string): Promise<Counter | null>;
+  saveCounter(counter: Counter): Promise<void>;
+  incrementCounter(id: string, amount?: number): Promise<number>;
+  decrementCounter(id: string, amount?: number): Promise<number>;
+  getCountersByConfigId(configId: string): Promise<Counter[]>;
+  getCountersByEventId(eventId: string): Promise<Counter[]>;
 }

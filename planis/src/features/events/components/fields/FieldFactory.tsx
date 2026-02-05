@@ -1,19 +1,28 @@
-import React from 'react';
-import type { FieldConfig } from '../../../../types/FieldConfig';
-import { Input } from '../../../../components/ui/Input';
-import { Textarea } from '../../../../components/ui/Textarea';
-import { Select } from '../../../../components/ui/Select';
-import { Checkbox } from '../../../../components/ui/Checkbox';
-import { ColorPicker } from '../../../../components/ui/ColorPicker';
-import { Checklist } from '../../../../components/ui/Checklist';
+import React from "react";
+import type { FieldConfig } from "../../../../types/FieldConfig";
+import { Input } from "../../../../components/ui/Input";
+import { Textarea } from "../../../../components/ui/Textarea";
+import { Select } from "../../../../components/ui/Select";
+import { Checkbox } from "../../../../components/ui/Checkbox";
+import { ColorPicker } from "../../../../components/ui/ColorPicker";
+import { Checklist } from "../../../../components/ui/Checklist";
+import { CounterField } from "./CounterField";
 
 interface FieldFactoryProps {
   field: FieldConfig;
   value: any;
   onChange: (value: any) => void;
+  eventId: string;
+  configId: string;
 }
 
-export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChange }) => {
+export const FieldFactory: React.FC<FieldFactoryProps> = ({
+  field,
+  value,
+  onChange,
+  eventId,
+  configId,
+}) => {
   const commonProps = {
     label: field.label,
     placeholder: field.placeholder,
@@ -21,7 +30,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
   };
 
   switch (field.type) {
-    case 'text':
+    case "text":
       return (
         <Input
           {...commonProps}
@@ -31,7 +40,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'number':
+    case "number":
       return (
         <Input
           {...commonProps}
@@ -41,7 +50,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'date':
+    case "date":
       return (
         <Input
           {...commonProps}
@@ -51,7 +60,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'textarea':
+    case "textarea":
       return (
         <Textarea
           {...commonProps}
@@ -61,7 +70,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'boolean':
+    case "boolean":
       return (
         <Checkbox
           label={field.label}
@@ -71,7 +80,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'select':
+    case "select":
       return (
         <Select
           {...commonProps}
@@ -81,7 +90,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'color':
+    case "color":
       return (
         <ColorPicker
           {...commonProps}
@@ -90,7 +99,7 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
         />
       );
 
-    case 'checklist':
+    case "checklist":
       return (
         <Checklist
           {...commonProps}
@@ -98,6 +107,11 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
           value={Array.isArray(value) ? value : []}
           onChange={onChange}
         />
+      );
+
+    case "counter":
+      return (
+        <CounterField field={field} eventId={eventId} configId={configId} />
       );
 
     default:

@@ -1,6 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { DEFAULT_CONFIGS, type EventConfig } from "../types/EventConfig";
 import type { CalendarEvent } from "../types";
+import type { Counter } from "../types/Counter";
 import type { IStorageProvider } from "./IStorageProvider";
 
 interface PlanisDB extends DBSchema {
@@ -13,12 +14,17 @@ interface PlanisDB extends DBSchema {
     value: CalendarEvent;
     indexes: { "by-config": string };
   };
+  counters: {
+    key: string;
+    value: Counter;
+    indexes: { "by-config": string; "by-event": string; "by-field": string };
+  };
 }
 
 export class IndexedDBStorageProvider implements IStorageProvider {
   private db: IDBPDatabase<PlanisDB> | null = null;
   private readonly DB_NAME = "PlanisDB";
-  private readonly DB_VERSION = 1;
+  private readonly DB_VERSION = 2;
 
   async initialize(): Promise<void> {
     this.db = await openDB<PlanisDB>(this.DB_NAME, this.DB_VERSION, {
@@ -32,6 +38,15 @@ export class IndexedDBStorageProvider implements IStorageProvider {
             keyPath: "id",
           });
           eventStore.createIndex("by-config", "eventConfigId");
+        }
+
+        if (!db.objectStoreNames.contains("counters")) {
+          const counterStore = db.createObjectStore("counters", {
+            keyPath: "id",
+          });
+          counterStore.createIndex("by-config", "configId");
+          counterStore.createIndex("by-event", "eventId");
+          counterStore.createIndex("by-field", "fieldId");
         }
       },
     });
@@ -136,6 +151,71 @@ export class IndexedDBStorageProvider implements IStorageProvider {
       start: new Date(event.start),
       end: new Date(event.end),
     };
+  }
+
+  async getCounter(id: string): Promise<Counter | null> {
+    if (!this.db) throw new Error("Database not initialized");
+    const counter = await this.db.get("counters", id);
+    return counter || null;
+  }
+
+  async saveCounter(counter: Counter): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db.put("counters", counter);
+  }
+
+  async incrementCounter(id: string, amount: number = 1): Promise<number> {
+    if (!this.db) throw new Error("Database not initialized");
+    let counter = await this.getCounter(id);
+
+    if (!counter) {
+      counter = {
+        id,
+        fieldId: id.split("-")[1] || "",
+        value: 0,
+      };
+    }
+
+    counter.value += amount;
+    await this.saveCounter(counter);
+    return counter.value;
+  }
+
+  async decrementCounter(id: string, amount: number = 1): Promise<number> {
+    if (!this.db) throw new Error("Database not initialized");
+    let counter = await this.getCounter(id);
+
+    if (!counter) {
+      counter = {
+        id,
+        fieldId: id.split("-")[1] || "",
+        value: 0,
+      };
+    }
+
+    counter.value = Math.max(0, counter.value - amount);
+    await this.saveCounter(counter);
+    return counter.value;
+  }
+
+  async getCountersByConfigId(configId: string): Promise<Counter[]> {
+    if (!this.db) throw new Error("Database not initialized");
+    const counters = await this.db.getAllFromIndex(
+      "counters",
+      "by-config",
+      configId,
+    );
+    return counters;
+  }
+
+  async getCountersByEventId(eventId: string): Promise<Counter[]> {
+    if (!this.db) throw new Error("Database not initialized");
+    const counters = await this.db.getAllFromIndex(
+      "counters",
+      "by-event",
+      eventId,
+    );
+    return counters;
   }
 }
 

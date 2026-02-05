@@ -19,20 +19,20 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
     };
     const updatedField = {
       ...field,
-      options: [...(field.options || []), newOption],
+      options: [...((field as any).options || []), newOption],
     } as any;
     onChange(updatedField);
   };
 
   const handleOptionUpdate = (index: number, updated: SelectOption) => {
-    const newOptions = [...(field.options || [])];
+    const newOptions = [...((field as any).options || [])];
     newOptions[index] = updated;
     const updatedField = { ...field, options: newOptions } as any;
     onChange(updatedField);
   };
 
   const handleOptionRemove = (index: number) => {
-    const newOptions = [...(field.options || [])];
+    const newOptions = [...((field as any).options || [])];
     newOptions.splice(index, 1);
     const updatedField = { ...field, options: newOptions } as any;
     onChange(updatedField);
@@ -86,6 +86,7 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             <option value="select">Liste déroulante</option>
             <option value="checklist">Todo List</option>
             <option value="color">Couleur</option>
+            <option value="counter">Compteur</option>
           </select>
         </div>
         <div className="flex-1">
@@ -115,6 +116,37 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
           <span className="text-sm font-bold">Requis</span>
         </label>
       </div>
+
+      {field.type === "counter" && (
+        <div className="mb-3 p-3 bg-neo-cyan/20 border-[3px] border-black rounded-lg">
+          <label className="block font-bold text-xs uppercase mb-2">
+            Portée du compteur
+          </label>
+          <select
+            value={(field as any).scope || "event"}
+            onChange={(e) =>
+              onChange({
+                ...field,
+                scope: e.target.value as "config" | "event",
+              } as any)
+            }
+            className="w-full p-2 border-[3px] border-black rounded-lg text-sm bg-white"
+          >
+            <option value="event">
+              Par événement (chaque événement a son propre compteur)
+            </option>
+            <option value="config">
+              Par configuration (tous les événements partagent le même compteur)
+            </option>
+          </select>
+          <p className="text-xs text-gray-600 mt-2">
+            {(field as any).scope === "config"
+              ? "🔗 Tous les événements de cette configuration partageront le même compteur."
+              : "🔒 Chaque événement aura son propre compteur indépendant."}
+          </p>
+        </div>
+      )}
+
       {(field.type === "select" || field.type === "checklist") && (
         <div className="mt-3 border-t-2 border-black pt-3">
           <div className="flex items-center justify-between mb-2">

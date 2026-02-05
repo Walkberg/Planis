@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useConfig } from "../providers/ConfigProvider";
 import { FieldConfigEditor } from "./FieldConfigEditor";
-import type { EventConfig, RecurrenceType } from "../../../types/EventConfig";
+import type { EventConfig } from "../../../types/EventConfig";
 import type { FieldConfig } from "../../../types/FieldConfig";
 
 import { ColorPicker } from "../../../components/ui/ColorPicker";

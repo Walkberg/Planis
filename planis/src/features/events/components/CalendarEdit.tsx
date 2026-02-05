@@ -187,6 +187,8 @@ export const CalendarEdit = () => {
             fieldConfigs={currentConfig.fieldConfigs}
             values={selectedEvent.customFieldsValues}
             onChange={handleCustomFieldChange}
+            eventId={selectedEvent.id}
+            configId={selectedEvent.eventConfigId}
           />
         )}
         <div className="flex gap-2.5 mt-5">
