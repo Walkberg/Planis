@@ -16,7 +16,7 @@ export const CalendarPreview = () => {
   return (
     <div className="w-[280px] bg-neo-yellow border-r-4 border-black p-5 overflow-y-auto">
       <div className="bg-neo-cyan border-4 border-black p-4 mb-5  rounded-xl">
-        <h2 className="m-0 text-2xl font-bold uppercase">Calendrier</h2>
+        <h2 className="m-0 text-2xl font-bold uppercase">Planis</h2>
       </div>
 
       <div className="flex justify-between items-center mb-4">
