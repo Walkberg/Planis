@@ -5,10 +5,8 @@ import React, {
   useEffect,
   type ReactNode,
 } from "react";
-import {
-  useEvents,
-  type CalendarEvent,
-} from "../../events/providers/EventsProvider";
+import { useEvents } from "../../events/providers/EventsProvider";
+import type { CalendarEvent } from "../../../types";
 
 interface DragState {
   day: Date;
@@ -19,7 +17,7 @@ interface DragState {
 
 interface DragInteractionContextType {
   isDragging: boolean;
-  isResizing: boolean | number;
+  isResizing: boolean | string;
   dragStart: DragState | null;
   dragEnd: DragState | null;
   handleMouseDown: (
@@ -57,7 +55,7 @@ export const DragInteractionProvider: React.FC<
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<DragState | null>(null);
   const [dragEnd, setDragEnd] = useState<DragState | null>(null);
-  const [isResizing, setIsResizing] = useState<boolean | number>(false);
+  const [isResizing, setIsResizing] = useState<boolean | string>(false);
 
   const handleMouseDown = (
     day: Date,
@@ -113,17 +111,19 @@ export const DragInteractionProvider: React.FC<
         endTime.setMinutes(endTime.getMinutes() + 30);
       }
 
-      const newEvent: CalendarEvent = {
-        id: Date.now(),
+      const newEvent = {
         title: "",
         start: dragStart.startTime!,
         end: endTime,
         color: "#ff6b35",
+        isAllDay: false,
+        eventConfigId: "config-event",
+        customFieldsValues: {},
         isDraft: true,
       };
 
       addEvent(newEvent);
-      setSelectedEvent(newEvent);
+      setSelectedEvent(newEvent as any);
 
       setIsDragging(false);
       setDragStart(null);

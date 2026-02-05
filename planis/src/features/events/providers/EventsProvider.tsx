@@ -2,27 +2,24 @@ import React, {
   createContext,
   useContext,
   useState,
+  useEffect,
   type ReactNode,
 } from "react";
+import type { CalendarEvent } from "../../../types";
+import { storageProvider } from "../../../storage/IndexedDBStorageProvider";
 
-export interface CalendarEvent {
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  color: string;
-  isDraft?: boolean;
-  isAllDay?: boolean;
-}
-
-interface EventsContextType {
+export interface EventsContextType {
   events: CalendarEvent[];
+  loading: boolean;
   selectedEvent: CalendarEvent | null;
   setSelectedEvent: (event: CalendarEvent | null) => void;
-  addEvent: (event: CalendarEvent) => void;
-  updateEvent: (updates: Partial<CalendarEvent>) => void;
-  deleteEvent: () => void;
-  removeDrafts: () => void;
+  addEvent: (event: Omit<CalendarEvent, "id">) => Promise<void>;
+  updateEvent: (updates: Partial<CalendarEvent>) => Promise<void>;
+  deleteEvent: () => Promise<void>;
+  removeDrafts: () => Promise<void>;
+  updateCustomField: (key: string, value: any) => void;
+  getCustomFieldValue: (key: string) => any;
+  refreshEvents: () => Promise<void>;
   getEventStyle: (
     event: CalendarEvent,
     day: Date,
@@ -46,37 +43,85 @@ interface EventsProviderProps {
 
 export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null,
   );
 
-  const addEvent = (event: CalendarEvent) => {
-    setEvents((prevEvents) => [...prevEvents, event]);
+  const refreshEvents = async () => {
+    try {
+      const allEvents = await storageProvider.getAllEvents();
+      setEvents(allEvents);
+    } catch (error) {
+      console.error("Failed to load events:", error);
+    }
   };
 
-  const removeDrafts = () => {
-    setEvents((prevEvents) => prevEvents.filter((e) => !e.isDraft));
+  useEffect(() => {
+    const initEvents = async () => {
+      setLoading(true);
+      await refreshEvents();
+      setLoading(false);
+    };
+
+    initEvents();
+  }, []);
+
+  const addEvent = async (event: Omit<CalendarEvent, "id">): Promise<void> => {
+    const newEvent: CalendarEvent = {
+      ...event,
+      id: `event-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+    };
+
+    await storageProvider.saveEvent(newEvent);
+    await refreshEvents();
   };
 
-  const updateEvent = (updates: Partial<CalendarEvent>) => {
+  const removeDrafts = async () => {
+    const drafts = events.filter((e) => e.isDraft);
+    for (const draft of drafts) {
+      await storageProvider.deleteEvent(draft.id);
+    }
+    await refreshEvents();
+  };
+
+  const updateEvent = async (updates: Partial<CalendarEvent>) => {
     if (!selectedEvent) return;
 
     const updatedEvent = { ...selectedEvent, ...updates };
+
     if (selectedEvent.isDraft && updates.title && updates.title.trim()) {
       updatedEvent.isDraft = false;
     }
 
-    setEvents(
-      events.map((e) => (e.id === selectedEvent.id ? updatedEvent : e)),
-    );
+    await storageProvider.updateEvent(selectedEvent.id, updatedEvent);
+    await refreshEvents();
+
     setSelectedEvent(updatedEvent);
   };
 
-  const deleteEvent = () => {
+  const deleteEvent = async () => {
     if (!selectedEvent) return;
 
-    setEvents(events.filter((e) => e.id !== selectedEvent.id));
+    await storageProvider.deleteEvent(selectedEvent.id);
+    await refreshEvents();
     setSelectedEvent(null);
+  };
+
+  const updateCustomField = (key: string, value: any) => {
+    if (!selectedEvent) return;
+
+    const updatedValues = {
+      ...selectedEvent.customFieldsValues,
+      [key]: value,
+    };
+
+    updateEvent({ customFieldsValues: updatedValues });
+  };
+
+  const getCustomFieldValue = (key: string): any => {
+    if (!selectedEvent) return undefined;
+    return selectedEvent.customFieldsValues[key];
   };
 
   const getEventStyle = (
@@ -98,12 +143,16 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
 
   const value: EventsContextType = {
     events,
+    loading,
     selectedEvent,
     setSelectedEvent,
     addEvent,
     updateEvent,
     deleteEvent,
     removeDrafts,
+    updateCustomField,
+    getCustomFieldValue,
+    refreshEvents,
     getEventStyle,
   };
 

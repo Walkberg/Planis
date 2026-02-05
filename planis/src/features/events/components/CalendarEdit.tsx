@@ -1,19 +1,65 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useEvents } from "../providers/EventsProvider";
+import { useConfig } from "../../configs/providers/ConfigProvider";
+import { ConfigSelector } from "./ConfigSelector";
+import { DynamicFieldsRenderer } from "./DynamicFieldsRenderer";
+
+const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E"];
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =
     useEvents();
+  const { configs } = useConfig();
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const [currentConfig, setCurrentConfig] = useState<
+    (typeof configs)[0] | null
+  >(null);
 
   useEffect(() => {
-    if (selectedEvent && titleInputRef.current) {
-      titleInputRef.current.focus();
+    if (selectedEvent) {
+      const config = configs.find((c) => c.id === selectedEvent.eventConfigId);
+      setCurrentConfig(config || null);
+
+      if (titleInputRef.current) {
+        titleInputRef.current.focus();
+      }
     }
-  }, [selectedEvent]);
+  }, [selectedEvent, configs]);
 
   const handleClose = () => {
     setSelectedEvent(null);
+  };
+
+  const handleConfigChange = (configId: string) => {
+    const newConfig = configs.find((c) => c.id === configId);
+    if (!newConfig || !selectedEvent) return;
+
+    setCurrentConfig(newConfig);
+
+    const defaultCustomFields: Record<string, any> = {};
+    newConfig.fieldConfigs.forEach((field) => {
+      if (field.defaultValue !== undefined) {
+        defaultCustomFields[field.key] = field.defaultValue;
+      }
+    });
+
+    updateEvent({
+      eventConfigId: configId,
+      color: newConfig.color,
+      isAllDay: newConfig.isAllDay,
+      customFieldsValues: defaultCustomFields,
+    });
+  };
+
+  const handleCustomFieldChange = (key: string, value: any) => {
+    if (!selectedEvent) return;
+
+    const updatedValues = {
+      ...selectedEvent.customFieldsValues,
+      [key]: value,
+    };
+
+    updateEvent({ customFieldsValues: updatedValues });
   };
 
   if (!selectedEvent) return null;
@@ -25,6 +71,10 @@ export const CalendarEdit = () => {
       </div>
 
       <div className="flex flex-col gap-4">
+        <ConfigSelector
+          selectedConfigId={selectedEvent.eventConfigId}
+          onChange={handleConfigChange}
+        />
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Titre
@@ -38,7 +88,6 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
-
         <div>
           <label className="flex items-center gap-2 font-bold mb-3 text-sm uppercase cursor-pointer">
             <input
@@ -50,7 +99,6 @@ export const CalendarEdit = () => {
             Toute la journée
           </label>
         </div>
-
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Date de début
@@ -62,7 +110,6 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
-
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Date de fin
@@ -74,13 +121,12 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
-
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Couleur
           </label>
           <div className="flex gap-2 flex-wrap">
-            {["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E"].map((color) => (
+            {DEFAULT_COLORS.map((color) => (
               <button
                 key={color}
                 onClick={() => updateEvent({ color })}
@@ -94,7 +140,13 @@ export const CalendarEdit = () => {
             ))}
           </div>
         </div>
-
+        {currentConfig && (
+          <DynamicFieldsRenderer
+            fieldConfigs={currentConfig.fieldConfigs}
+            values={selectedEvent.customFieldsValues}
+            onChange={handleCustomFieldChange}
+          />
+        )}
         <div className="flex gap-2.5 mt-5">
           <button
             onClick={handleClose}
