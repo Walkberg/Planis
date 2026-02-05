@@ -22,3 +22,20 @@ export interface FieldConfig {
   placeholder?: string;
   visibilityRules?: Record<string, any>;
 }
+
+export type TextFieldConfig = FieldConfig & {
+  type: "text" | "number" | "textarea";
+};
+
+export type SelectFieldConfig = FieldConfig & {
+  type: "select";
+  options: SelectOption[];
+};
+
+export type DateFieldConfig = FieldConfig & {
+  type: "date";
+};
+
+export type BooleanFieldConfig = FieldConfig & {
+  type: "boolean";
+};
