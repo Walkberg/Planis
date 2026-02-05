@@ -11,35 +11,41 @@ export interface SelectOption {
   label: string;
 }
 
-export interface FieldConfig {
+export type FieldConfig =
+  | NumberFieldConfig
+  | TextFieldConfig
+  | SelectFieldConfig
+  | DateFieldConfig
+  | BooleanFieldConfig;
+
+export interface BaseFieldConfig {
   id: string;
   key: string;
   label: string;
   type: FieldType;
   defaultValue?: any;
   required?: boolean;
-  options?: SelectOption[];
   placeholder?: string;
   visibilityRules?: Record<string, any>;
 }
 
-export type NumberFieldConfig = FieldConfig & {
+export type NumberFieldConfig = BaseFieldConfig & {
   type: "number";
 };
 
-export type TextFieldConfig = FieldConfig & {
+export type TextFieldConfig = BaseFieldConfig & {
   type: "text" | "textarea";
 };
 
-export type SelectFieldConfig = FieldConfig & {
+export type SelectFieldConfig = BaseFieldConfig & {
   type: "select";
   options: SelectOption[];
 };
 
-export type DateFieldConfig = FieldConfig & {
+export type DateFieldConfig = BaseFieldConfig & {
   type: "date";
 };
 
-export type BooleanFieldConfig = FieldConfig & {
+export type BooleanFieldConfig = BaseFieldConfig & {
   type: "boolean";
 };
