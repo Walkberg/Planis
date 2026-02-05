@@ -10,7 +10,7 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
   selectedConfigId,
   onChange,
 }) => {
-  const { configs, loading } = useConfig();
+  const { configs, loading, openManagement } = useConfig();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -83,16 +83,28 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
 
       {isOpen && (
         <div className="absolute z-10 w-full mt-2 bg-white border-[3px] border-black rounded-lg shadow-neo-lg overflow-hidden">
-          <div className="p-2 border-b-2 border-black bg-gray-50">
+          <div className="p-2 border-b-2 border-black bg-gray-50 flex gap-2">
             <input
               ref={searchInputRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher un type..."
-              className="w-full p-2 border-2 border-black rounded font-space text-sm focus:outline-none focus:shadow-neo-sm"
+              className="flex-1 p-2 border-2 border-black rounded font-space text-sm focus:outline-none focus:shadow-neo-sm"
               onClick={(e) => e.stopPropagation()}
             />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(false);
+                openManagement();
+              }}
+              title="Ajouter une configuration"
+              className="w-10 bg-neo-green border-2 border-black rounded flex items-center justify-center font-bold text-xl hover:bg-[#20e985] transition-colors"
+            >
+              +
+            </button>
           </div>
           <div className="max-h-60 overflow-y-auto">
             {filteredConfigs.length > 0 ? (

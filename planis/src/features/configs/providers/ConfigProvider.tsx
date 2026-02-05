@@ -18,6 +18,9 @@ interface ConfigContextType {
   deleteConfig: (id: string) => Promise<void>;
   canDeleteConfig: (id: string) => Promise<boolean>;
   refreshConfigs: () => Promise<void>;
+  isManagementOpen: boolean;
+  openManagement: () => void;
+  closeManagement: () => void;
 }
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
@@ -40,6 +43,10 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   const [selectedConfig, setSelectedConfig] = useState<EventConfig | null>(
     null,
   );
+  const [isManagementOpen, setIsManagementOpen] = useState(false);
+
+  const openManagement = () => setIsManagementOpen(true);
+  const closeManagement = () => setIsManagementOpen(false);
 
   const refreshConfigs = async () => {
     try {
@@ -127,6 +134,9 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     deleteConfig,
     canDeleteConfig,
     refreshConfigs,
+    isManagementOpen,
+    openManagement,
+    closeManagement,
   };
 
   return (

@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { ConfigList } from "./ConfigList";
-import { ConfigEditor } from "./ConfigEditor";
+import React from 'react';
+import { ConfigList } from './ConfigList';
+import { ConfigEditor } from './ConfigEditor';
+import { useConfig } from '../providers/ConfigProvider';
 
 export const ConfigManagement: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isManagementOpen, openManagement, closeManagement } = useConfig();
 
-  if (!isOpen) {
+  if (!isManagementOpen) {
     return (
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={openManagement}
         className="fixed bottom-6 right-6 bg-neo-purple text-white border-4 border-black rounded-full w-16 h-16 flex items-center justify-center font-bold text-2xl shadow-neo-lg hover:scale-110 transition-transform z-50"
         title="Gérer les configurations"
       >
@@ -25,7 +26,7 @@ export const ConfigManagement: React.FC = () => {
             Gestion des Configurations
           </h1>
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={closeManagement}
             className="bg-neo-orange border-[3px] border-black rounded-lg px-4 py-2 font-bold uppercase shadow-neo-md hover:bg-[#e55a2b] transition-all"
           >
             ✕ Fermer
