@@ -1,4 +1,4 @@
-import type { CalendarEvent as CalendarEventType } from "../providers/EventsProvider";
+import type { CalendarEvent as CalendarEventType } from "../../../types";
 import { useEvents } from "../providers/EventsProvider";
 import { useDragInteraction } from "../../interactions/providers/DragInteractionProvider";
 
