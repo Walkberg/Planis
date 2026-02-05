@@ -97,7 +97,7 @@ export const DragInteractionProvider: React.FC<
   };
 
   useEffect(() => {
-    const handleGlobalMouseUp = () => {
+    const handleGlobalMouseUp = async () => {
       if (!isDragging || !dragStart) return;
 
       removeDrafts();
@@ -112,18 +112,18 @@ export const DragInteractionProvider: React.FC<
       }
 
       const newEvent = {
-        title: "",
+        title: '',
         start: dragStart.startTime!,
         end: endTime,
-        color: "#ff6b35",
+        color: '#ff6b35',
         isAllDay: false,
-        eventConfigId: "config-event",
+        eventConfigId: 'config-event',
         customFieldsValues: {},
         isDraft: true,
       };
 
-      addEvent(newEvent);
-      setSelectedEvent(newEvent as any);
+      const createdEvent = await addEvent(newEvent);
+      setSelectedEvent(createdEvent);
 
       setIsDragging(false);
       setDragStart(null);

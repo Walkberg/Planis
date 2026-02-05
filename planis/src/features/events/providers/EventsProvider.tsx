@@ -13,7 +13,7 @@ export interface EventsContextType {
   loading: boolean;
   selectedEvent: CalendarEvent | null;
   setSelectedEvent: (event: CalendarEvent | null) => void;
-  addEvent: (event: Omit<CalendarEvent, "id">) => Promise<void>;
+  addEvent: (event: Omit<CalendarEvent, 'id'>) => Promise<CalendarEvent>;
   updateEvent: (updates: Partial<CalendarEvent>) => Promise<void>;
   deleteEvent: () => Promise<void>;
   removeDrafts: () => Promise<void>;
@@ -67,7 +67,7 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
     initEvents();
   }, []);
 
-  const addEvent = async (event: Omit<CalendarEvent, "id">): Promise<void> => {
+  const addEvent = async (event: Omit<CalendarEvent, "id">): Promise<CalendarEvent> => {
     const newEvent: CalendarEvent = {
       ...event,
       id: `event-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -75,6 +75,8 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
 
     await storageProvider.saveEvent(newEvent);
     await refreshEvents();
+    
+    return newEvent;
   };
 
   const removeDrafts = async () => {
@@ -94,10 +96,18 @@ export const EventsProvider: React.FC<EventsProviderProps> = ({ children }) => {
       updatedEvent.isDraft = false;
     }
 
-    await storageProvider.updateEvent(selectedEvent.id, updatedEvent);
-    await refreshEvents();
-
     setSelectedEvent(updatedEvent);
+    setEvents((prevEvents) =>
+      prevEvents.map((e) => (e.id === selectedEvent.id ? updatedEvent : e)),
+    );
+
+    try {
+      await storageProvider.updateEvent(selectedEvent.id, updatedEvent);
+    } catch (error) {
+      console.error('Failed to update event:', error);
+      setSelectedEvent(selectedEvent);
+      await refreshEvents();
+    }
   };
 
   const deleteEvent = async () => {
