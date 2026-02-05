@@ -1,9 +1,5 @@
 import type { FieldConfig } from "./FieldConfig";
 
-/**
- * Configuration d'un type d'événement
- * Définit les valeurs par défaut et les champs dynamiques pour un type d'événement
- */
 export interface EventConfig {
   id: string;
   name: string;
