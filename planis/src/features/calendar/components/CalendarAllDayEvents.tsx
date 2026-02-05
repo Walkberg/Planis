@@ -17,7 +17,6 @@ export const CalendarAllDayEvents = ({
     const dayEvents = allDayEvents.filter((event) =>
       isSameDay(event.start, day),
     );
-    console.log("Day:", day.toLocaleDateString(), "Events:", dayEvents.length);
     return {
       day,
       events: dayEvents,
