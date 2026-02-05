@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useConfig } from '../../configs/providers/ConfigProvider';
+import React, { useState, useRef, useEffect } from "react";
+import { useConfig } from "../../configs/providers/ConfigProvider";
 
 interface ConfigSelectorProps {
   selectedConfigId: string;
@@ -12,9 +12,15 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
 }) => {
   const { configs, loading } = useConfig();
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const selectedConfig = configs.find((c) => c.id === selectedConfigId);
+
+  const filteredConfigs = configs.filter((config) =>
+    config.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -26,11 +32,20 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+    if (!isOpen) {
+      setSearch("");
+    }
+  }, [isOpen]);
 
   if (loading) {
     return <div className="text-sm">Chargement...</div>;
@@ -62,36 +77,57 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
           </span>
         )}
         <span className="font-bold transform transition-transform duration-200">
-          {isOpen ? '▲' : '▼'}
+          {isOpen ? "▲" : "▼"}
         </span>
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-2 bg-white border-[3px] border-black rounded-lg shadow-neo-lg max-h-60 overflow-y-auto">
-          {configs.map((config) => (
-            <button
-              key={config.id}
-              type="button"
-              onClick={() => {
-                onChange(config.id);
-                setIsOpen(false);
-              }}
-              className={`w-full p-3 flex items-center gap-3 transition-colors ${
-                selectedConfigId === config.id
-                  ? 'bg-neo-cyan text-black'
-                  : 'hover:bg-gray-100'
-              }`}
-            >
-              <div
-                className="w-5 h-5 rounded border-2 border-black"
-                style={{ backgroundColor: config.color }}
-              />
-              <span className="font-bold text-sm uppercase">{config.name}</span>
-              {selectedConfigId === config.id && (
-                <span className="ml-auto font-bold">✓</span>
-              )}
-            </button>
-          ))}
+        <div className="absolute z-10 w-full mt-2 bg-white border-[3px] border-black rounded-lg shadow-neo-lg overflow-hidden">
+          <div className="p-2 border-b-2 border-black bg-gray-50">
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher un type..."
+              className="w-full p-2 border-2 border-black rounded font-space text-sm focus:outline-none focus:shadow-neo-sm"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          <div className="max-h-60 overflow-y-auto">
+            {filteredConfigs.length > 0 ? (
+              filteredConfigs.map((config) => (
+                <button
+                  key={config.id}
+                  type="button"
+                  onClick={() => {
+                    onChange(config.id);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full p-3 flex items-center gap-3 transition-colors ${
+                    selectedConfigId === config.id
+                      ? "bg-neo-cyan text-black"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <div
+                    className="w-5 h-5 rounded border-2 border-black"
+                    style={{ backgroundColor: config.color }}
+                  />
+                  <span className="font-bold text-sm uppercase">
+                    {config.name}
+                  </span>
+                  {selectedConfigId === config.id && (
+                    <span className="ml-auto font-bold">✓</span>
+                  )}
+                </button>
+              ))
+            ) : (
+              <div className="p-3 text-center text-sm text-gray-500 font-bold">
+                Aucun résultat
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
