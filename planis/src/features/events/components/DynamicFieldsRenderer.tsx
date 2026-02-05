@@ -1,5 +1,5 @@
-import React from 'react';
-import type { FieldConfig } from '../../../types/FieldConfig';
+import React from "react";
+import type { FieldConfig } from "../../../types/FieldConfig";
 
 interface DynamicFieldsRendererProps {
   fieldConfigs: FieldConfig[];
@@ -17,10 +17,10 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
   }
 
   const renderField = (field: FieldConfig) => {
-    const value = values[field.key] ?? field.defaultValue ?? '';
+    const value = values[field.key] ?? field.defaultValue ?? "";
 
     switch (field.type) {
-      case 'text':
+      case "text":
         return (
           <input
             type="text"
@@ -32,7 +32,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           />
         );
 
-      case 'textarea':
+      case "textarea":
         return (
           <textarea
             value={value}
@@ -44,7 +44,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           />
         );
 
-      case 'number':
+      case "number":
         return (
           <input
             type="number"
@@ -56,7 +56,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           />
         );
 
-      case 'date':
+      case "date":
         return (
           <input
             type="date"
@@ -67,7 +67,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           />
         );
 
-      case 'boolean':
+      case "boolean":
         return (
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -80,7 +80,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
           </label>
         );
 
-      case 'select':
+      case "select":
         return (
           <select
             value={value}
@@ -103,14 +103,15 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
   };
 
   return (
-    <div className="border-t-4 border-black pt-4 mt-4">
-      <h3 className="font-bold text-sm uppercase mb-3">Champs spécifiques</h3>
+    <div className=" pt-4 mt-4">
       <div className="flex flex-col gap-4">
         {fieldConfigs.map((field) => (
           <div key={field.id}>
             <label className="block font-bold mb-2 text-sm uppercase">
               {field.label}
-              {field.required && <span className="text-neo-orange ml-1">*</span>}
+              {field.required && (
+                <span className="text-neo-orange ml-1">*</span>
+              )}
             </label>
             {renderField(field)}
           </div>

@@ -78,10 +78,6 @@ export const CalendarEdit = () => {
       </div>
 
       <div className="flex flex-col gap-4">
-        <ConfigSelector
-          selectedConfigId={selectedEvent.eventConfigId}
-          onChange={handleConfigChange}
-        />
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
             Titre
@@ -95,6 +91,10 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
+        <ConfigSelector
+          selectedConfigId={selectedEvent.eventConfigId}
+          onChange={handleConfigChange}
+        />
         <div>
           <label className="flex items-center gap-2 font-bold mb-3 text-sm uppercase cursor-pointer">
             <input
