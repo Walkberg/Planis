@@ -106,7 +106,10 @@ export const CalendarEdit = () => {
       <div className="bg-neo-purple border-4 border-black p-4 mb-5 shadow-neo-lg rounded-xl text-white">
         <h3 className="m-0 text-xl font-bold uppercase">Éditer l'événement</h3>
       </div>
-
+      <ConfigSelector
+        selectedConfigId={selectedEvent.eventConfigId}
+        onChange={handleConfigChange}
+      />
       <div className="flex flex-col gap-4">
         <div>
           <label className="block font-bold mb-2 text-sm uppercase">
@@ -121,10 +124,7 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
-        <ConfigSelector
-          selectedConfigId={selectedEvent.eventConfigId}
-          onChange={handleConfigChange}
-        />
+
         <div>
           <label className="flex items-center gap-2 font-bold mb-3 text-sm uppercase cursor-pointer">
             <input
@@ -174,14 +174,11 @@ export const CalendarEdit = () => {
             }
           }}
         />
-
-        <div>
-          <ColorPicker
-            label="Couleur"
-            value={selectedEvent.color}
-            onChange={(e) => updateEvent({ color: e.target.value })}
-          />
-        </div>
+        <ColorPicker
+          label="Couleur"
+          value={selectedEvent.color}
+          onChange={(e) => updateEvent({ color: e.target.value })}
+        />
         {currentConfig && (
           <DynamicFieldsRenderer
             fieldConfigs={currentConfig.fieldConfigs}

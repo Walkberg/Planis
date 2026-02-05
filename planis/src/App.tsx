@@ -2,7 +2,6 @@ import { CalendarPreview } from "./features/calendar/components/CalendarPreview"
 import { CalendarHeader } from "./features/calendar/components/CalendarHeader";
 import { CalendarView } from "./features/calendar/components/CalendarView";
 import { CalendarEdit } from "./features/events/components/CalendarEdit";
-import { ConfigManagement } from "./features/configs/components/ConfigManagement";
 import { ConfigModal } from "./features/configs/components/ConfigModal";
 
 export const CalendarApp = () => {
@@ -14,7 +13,6 @@ export const CalendarApp = () => {
         <CalendarView />
       </div>
       <CalendarEdit />
-      <ConfigManagement />
       <ConfigModal />
     </div>
   );
