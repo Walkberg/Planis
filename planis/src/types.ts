@@ -9,7 +9,15 @@ export interface CalendarEvent {
   customFieldsValues: Record<string, any>;
   isDraft?: boolean;
   recurrence?: {
-    type: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'monthly_day' | 'yearly';
+    type: RecurrenceType;
     endDate?: Date;
   };
 }
+
+export type RecurrenceType =
+  | "daily"
+  | "weekly"
+  | "biweekly"
+  | "monthly"
+  | "monthly_day"
+  | "yearly";

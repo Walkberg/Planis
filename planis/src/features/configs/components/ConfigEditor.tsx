@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useConfig } from "../providers/ConfigProvider";
 import { FieldConfigEditor } from "./FieldConfigEditor";
-import type { EventConfig } from "../../../types/EventConfig";
+import type { EventConfig, RecurrenceType } from "../../../types/EventConfig";
 import type { FieldConfig } from "../../../types/FieldConfig";
 
 import { ColorPicker } from "../../../components/ui/ColorPicker";
+import { RecurrencePicker } from "../../events/components/RecurencyPicker";
 
 export const ConfigEditor: React.FC = () => {
   const {
@@ -151,7 +152,9 @@ export const ConfigEditor: React.FC = () => {
           <ColorPicker
             label="Couleur par défaut"
             value={formData.color}
-            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, color: e.target.value })
+            }
           />
         </div>
         <div className="mb-6">
@@ -166,6 +169,53 @@ export const ConfigEditor: React.FC = () => {
             />
             Toute la journée par défaut
           </label>
+        </div>
+
+        <div className="mb-6 p-4 bg-neo-yellow/20 border-[3px] border-black rounded-lg">
+          <h3 className="font-bold uppercase text-sm mb-3">
+            Récurrence par défaut
+          </h3>
+          <div className="mb-3">
+            <label className="flex items-center gap-2 font-bold text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={formData.defaultRecurrence?.enabled ?? false}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setFormData({
+                      ...formData,
+                      defaultRecurrence: {
+                        type: formData.defaultRecurrence?.type ?? "yearly",
+                        enabled: true,
+                      },
+                    });
+                  } else {
+                    setFormData({
+                      ...formData,
+                      defaultRecurrence: undefined,
+                    });
+                  }
+                }}
+                className="w-5 h-5 cursor-pointer accent-neo-purple"
+              />
+              Activer la récurrence automatique
+            </label>
+          </div>
+
+          {formData.defaultRecurrence?.enabled && (
+            <RecurrencePicker
+              value={formData.defaultRecurrence.type}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  defaultRecurrence: {
+                    ...formData.defaultRecurrence!,
+                    type: value!,
+                  },
+                })
+              }
+            />
+          )}
         </div>
         <div className="border-t-4 border-black pt-4 mt-4">
           <div className="flex items-center justify-between mb-4">

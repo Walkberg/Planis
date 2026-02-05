@@ -1,4 +1,10 @@
+import type { RecurrenceType } from "../types";
 import type { FieldConfig } from "./FieldConfig";
+
+export interface DefaultRecurrence {
+  type: RecurrenceType;
+  enabled: boolean;
+}
 
 export interface EventConfig {
   id: string;
@@ -7,6 +13,7 @@ export interface EventConfig {
   isAllDay: boolean;
   isSystemConfig: boolean;
   fieldConfigs: FieldConfig[];
+  defaultRecurrence?: DefaultRecurrence;
 }
 
 export const DEFAULT_CONFIGS: EventConfig[] = [
@@ -25,6 +32,10 @@ export const DEFAULT_CONFIGS: EventConfig[] = [
     isAllDay: true,
     isSystemConfig: true,
     fieldConfigs: [],
+    defaultRecurrence: {
+      type: "yearly",
+      enabled: true,
+    },
   },
   {
     id: "config-task",

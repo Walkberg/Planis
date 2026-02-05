@@ -3,10 +3,8 @@ import { useEvents } from "../providers/EventsProvider";
 import { useConfig } from "../../configs/providers/ConfigProvider";
 import { ConfigSelector } from "./ConfigSelector";
 import { DynamicFieldsRenderer } from "./DynamicFieldsRenderer";
-
 import { ColorPicker } from "../../../components/ui/ColorPicker";
-
-// const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E"];
+import { RecurrencePicker } from "./RecurencyPicker";
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =
@@ -39,17 +37,18 @@ export const CalendarEdit = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!selectedEvent) return;
 
-      if (e.key === 'Delete') {
-      
-        if (window.confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')) {
+      if (e.key === "Delete") {
+        if (
+          window.confirm("Êtes-vous sûr de vouloir supprimer cet événement ?")
+        ) {
           deleteEvent();
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedEvent, deleteEvent]);
 
@@ -70,12 +69,23 @@ export const CalendarEdit = () => {
       }
     });
 
-    updateEvent({
+    const updates: any = {
       eventConfigId: configId,
       color: newConfig.color,
       isAllDay: newConfig.isAllDay,
       customFieldsValues: defaultCustomFields,
-    });
+    };
+
+    if (newConfig.defaultRecurrence?.enabled) {
+      updates.recurrence = {
+        type: newConfig.defaultRecurrence.type,
+        endDate: undefined,
+      };
+    } else if (!newConfig.defaultRecurrence) {
+      updates.recurrence = undefined;
+    }
+
+    updateEvent(updates);
   };
 
   const handleCustomFieldChange = (key: string, value: any) => {
@@ -148,37 +158,22 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
-        <div className="mb-4">
-          <label className="block font-bold mb-2 text-sm uppercase">
-            Récurrence
-          </label>
-          <select
-            value={selectedEvent.recurrence?.type || ""}
-            onChange={(e) => {
-              const type = e.target.value;
-              if (!type) {
-                const { recurrence, ...rest } = selectedEvent;
-                updateEvent(rest);
-              } else {
-                updateEvent({
-                  recurrence: {
-                    type: type as any,
-                    endDate: selectedEvent.recurrence?.endDate,
-                  },
-                });
-              }
-            }}
-            className="w-full p-2 border-[3px] border-black rounded-lg font-space text-sm bg-white"
-          >
-            <option value="">Aucune (Une fois)</option>
-            <option value="daily">Tous les jours</option>
-            <option value="weekly">Toutes les semaines</option>
-            <option value="biweekly">Toutes les 2 semaines</option>
-            <option value="monthly">Tous les mois (date fixe)</option>
-            <option value="monthly_day">Tous les mois (même jour de semaine)</option>
-            <option value="yearly">Tous les ans</option>
-          </select>
-        </div>
+        <RecurrencePicker
+          value={selectedEvent.recurrence?.type}
+          onChange={(value) => {
+            if (!value) {
+              const { recurrence, ...rest } = selectedEvent;
+              updateEvent(rest);
+            } else {
+              updateEvent({
+                recurrence: {
+                  type: value,
+                  endDate: selectedEvent.recurrence?.endDate,
+                },
+              });
+            }
+          }}
+        />
 
         <div>
           <ColorPicker
