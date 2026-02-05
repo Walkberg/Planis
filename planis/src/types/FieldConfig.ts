@@ -5,7 +5,8 @@ export type FieldType =
   | "date"
   | "boolean"
   | "textarea"
-  | "color";
+  | "color"
+  | "checklist";
 
 export interface SelectOption {
   value: string;
@@ -18,7 +19,8 @@ export type FieldConfig =
   | SelectFieldConfig
   | DateFieldConfig
   | BooleanFieldConfig
-  | ColorFieldConfig;
+  | ColorFieldConfig
+  | ChecklistFieldConfig;
 
 export interface BaseFieldConfig {
   id: string;
@@ -54,4 +56,9 @@ export type BooleanFieldConfig = BaseFieldConfig & {
 
 export type ColorFieldConfig = BaseFieldConfig & {
   type: "color";
+};
+
+export type ChecklistFieldConfig = BaseFieldConfig & {
+  type: "checklist";
+  options: SelectOption[];
 };

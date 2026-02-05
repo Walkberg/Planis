@@ -84,6 +84,7 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             <option value="date">Date</option>
             <option value="boolean">Oui/Non</option>
             <option value="select">Liste déroulante</option>
+            <option value="checklist">Todo List</option>
             <option value="color">Couleur</option>
           </select>
         </div>
@@ -114,10 +115,12 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
           <span className="text-sm font-bold">Requis</span>
         </label>
       </div>
-      {field.type === "select" && (
+      {(field.type === "select" || field.type === "checklist") && (
         <div className="mt-3 border-t-2 border-black pt-3">
           <div className="flex items-center justify-between mb-2">
-            <label className="font-bold text-xs uppercase">Options</label>
+            <label className="font-bold text-xs uppercase">
+              {field.type === "checklist" ? "Tâches" : "Options"}
+            </label>
             <button
               onClick={handleOptionAdd}
               className="text-xs bg-neo-green border-2 border-black rounded px-2 py-1 font-bold hover:bg-[#2ecc71]"

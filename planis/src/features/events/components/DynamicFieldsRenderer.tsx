@@ -18,8 +18,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
   }
 
   return (
-    <div className="pt-4 mt-4 border-t-4 border-black">
-      <h3 className="font-bold text-sm uppercase mb-3">Champs spécifiques</h3>
+    <div className="pt-4 mt-4">
       <div className="flex flex-col gap-4">
         {fieldConfigs.map((field) => (
           <FieldFactory
