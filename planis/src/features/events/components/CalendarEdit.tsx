@@ -148,6 +148,38 @@ export const CalendarEdit = () => {
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
+        <div className="mb-4">
+          <label className="block font-bold mb-2 text-sm uppercase">
+            Récurrence
+          </label>
+          <select
+            value={selectedEvent.recurrence?.type || ""}
+            onChange={(e) => {
+              const type = e.target.value;
+              if (!type) {
+                const { recurrence, ...rest } = selectedEvent;
+                updateEvent(rest);
+              } else {
+                updateEvent({
+                  recurrence: {
+                    type: type as any,
+                    endDate: selectedEvent.recurrence?.endDate,
+                  },
+                });
+              }
+            }}
+            className="w-full p-2 border-[3px] border-black rounded-lg font-space text-sm bg-white"
+          >
+            <option value="">Aucune (Une fois)</option>
+            <option value="daily">Tous les jours</option>
+            <option value="weekly">Toutes les semaines</option>
+            <option value="biweekly">Toutes les 2 semaines</option>
+            <option value="monthly">Tous les mois (date fixe)</option>
+            <option value="monthly_day">Tous les mois (même jour de semaine)</option>
+            <option value="yearly">Tous les ans</option>
+          </select>
+        </div>
+
         <div>
           <ColorPicker
             label="Couleur"

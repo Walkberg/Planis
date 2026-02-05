@@ -8,4 +8,8 @@ export interface CalendarEvent {
   eventConfigId: string;
   customFieldsValues: Record<string, any>;
   isDraft?: boolean;
+  recurrence?: {
+    type: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'monthly_day' | 'yearly';
+    endDate?: Date;
+  };
 }
