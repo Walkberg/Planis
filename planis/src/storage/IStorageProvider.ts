@@ -1,6 +1,7 @@
 import type { EventConfig } from "../types/EventConfig";
 import type { CalendarEvent } from "../types";
 import type { Counter } from "../types/Counter";
+import type { Indicator } from "../types/Indicator";
 
 export interface IStorageProvider {
   initialize(): Promise<void>;
@@ -24,4 +25,10 @@ export interface IStorageProvider {
   decrementCounter(id: string, amount?: number): Promise<number>;
   getCountersByConfigId(configId: string): Promise<Counter[]>;
   getCountersByEventId(eventId: string): Promise<Counter[]>;
+
+  // Indicators
+  getIndicator(id: string): Promise<Indicator | null>;
+  saveIndicator(indicator: Indicator): Promise<void>;
+  updateIndicatorValue(id: string, value: number): Promise<void>;
+  getIndicatorsByEventId(eventId: string): Promise<Indicator[]>;
 }

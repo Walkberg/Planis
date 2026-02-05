@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { DEFAULT_CONFIGS, type EventConfig } from "../types/EventConfig";
 import type { CalendarEvent } from "../types";
 import type { Counter } from "../types/Counter";
+import type { Indicator } from "../types/Indicator";
 import type { IStorageProvider } from "./IStorageProvider";
 
 interface PlanisDB extends DBSchema {
@@ -19,12 +20,17 @@ interface PlanisDB extends DBSchema {
     value: Counter;
     indexes: { "by-config": string; "by-event": string; "by-field": string };
   };
+  indicators: {
+    key: string;
+    value: Indicator;
+    indexes: { "by-event": string; "by-field": string };
+  };
 }
 
 export class IndexedDBStorageProvider implements IStorageProvider {
   private db: IDBPDatabase<PlanisDB> | null = null;
   private readonly DB_NAME = "PlanisDB";
-  private readonly DB_VERSION = 2;
+  private readonly DB_VERSION = 3;
 
   async initialize(): Promise<void> {
     this.db = await openDB<PlanisDB>(this.DB_NAME, this.DB_VERSION, {
@@ -47,6 +53,14 @@ export class IndexedDBStorageProvider implements IStorageProvider {
           counterStore.createIndex("by-config", "configId");
           counterStore.createIndex("by-event", "eventId");
           counterStore.createIndex("by-field", "fieldId");
+        }
+
+        if (!db.objectStoreNames.contains("indicators")) {
+          const indicatorStore = db.createObjectStore("indicators", {
+            keyPath: "id",
+          });
+          indicatorStore.createIndex("by-event", "eventId");
+          indicatorStore.createIndex("by-field", "fieldId");
         }
       },
     });
@@ -216,6 +230,40 @@ export class IndexedDBStorageProvider implements IStorageProvider {
       eventId,
     );
     return counters;
+  }
+
+  // Indicator methods
+  async getIndicator(id: string): Promise<Indicator | null> {
+    if (!this.db) throw new Error("Database not initialized");
+    const indicator = await this.db.get("indicators", id);
+    return indicator || null;
+  }
+
+  async saveIndicator(indicator: Indicator): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db.put("indicators", indicator);
+  }
+
+  async updateIndicatorValue(id: string, value: number): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    let indicator = await this.getIndicator(id);
+
+    if (!indicator) {
+      throw new Error(`Indicator with id ${id} not found`);
+    }
+
+    indicator.value = value;
+    await this.saveIndicator(indicator);
+  }
+
+  async getIndicatorsByEventId(eventId: string): Promise<Indicator[]> {
+    if (!this.db) throw new Error("Database not initialized");
+    const indicators = await this.db.getAllFromIndex(
+      "indicators",
+      "by-event",
+      eventId,
+    );
+    return indicators;
   }
 }
 

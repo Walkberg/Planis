@@ -87,6 +87,7 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             <option value="checklist">Todo List</option>
             <option value="color">Couleur</option>
             <option value="counter">Compteur</option>
+            <option value="indicator">Indicateur</option>
           </select>
         </div>
         <div className="flex-1">
@@ -143,6 +144,49 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             {(field as any).scope === "config"
               ? "🔗 Tous les événements de cette configuration partageront le même compteur."
               : "🔒 Chaque événement aura son propre compteur indépendant."}
+          </p>
+        </div>
+      )}
+
+      {field.type === "indicator" && (
+        <div className="mb-3 p-3 bg-neo-purple/20 border-[3px] border-black rounded-lg">
+          <label className="block font-bold text-xs uppercase mb-2">
+            Plage de valeurs
+          </label>
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="block text-xs font-bold mb-1">Minimum</label>
+              <input
+                type="number"
+                value={(field as any).min ?? -10}
+                onChange={(e) =>
+                  onChange({
+                    ...field,
+                    min: parseInt(e.target.value, 10) || -10,
+                  } as any)
+                }
+                className="w-full p-2 border-[3px] border-black rounded-lg text-sm"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs font-bold mb-1">Maximum</label>
+              <input
+                type="number"
+                value={(field as any).max ?? 10}
+                onChange={(e) =>
+                  onChange({
+                    ...field,
+                    max: parseInt(e.target.value, 10) || 10,
+                  } as any)
+                }
+                className="w-full p-2 border-[3px] border-black rounded-lg text-sm"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 mt-2">
+            📊 L'indicateur permettra de définir une valeur entre{" "}
+            {(field as any).min ?? -10} et {(field as any).max ?? 10} pour
+            chaque événement.
           </p>
         </div>
       )}

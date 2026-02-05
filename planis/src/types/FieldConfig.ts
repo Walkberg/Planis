@@ -7,7 +7,8 @@ export type FieldType =
   | "textarea"
   | "color"
   | "checklist"
-  | "counter";
+  | "counter"
+  | "indicator";
 
 export interface SelectOption {
   value: string;
@@ -22,7 +23,8 @@ export type FieldConfig =
   | BooleanFieldConfig
   | ColorFieldConfig
   | ChecklistFieldConfig
-  | CounterFieldConfig;
+  | CounterFieldConfig
+  | IndicatorFieldConfig;
 
 export interface BaseFieldConfig {
   id: string;
@@ -68,4 +70,10 @@ export type ChecklistFieldConfig = BaseFieldConfig & {
 export type CounterFieldConfig = BaseFieldConfig & {
   type: "counter";
   scope: "config" | "event";
+};
+
+export type IndicatorFieldConfig = BaseFieldConfig & {
+  type: "indicator";
+  min: number;
+  max: number;
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useConfig } from "../providers/ConfigProvider";
 import { Modal } from "../../../components/ui/Modal";
 import { ConfigEditor } from "./ConfigEditor";

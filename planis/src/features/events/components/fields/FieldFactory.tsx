@@ -7,6 +7,7 @@ import { Checkbox } from "../../../../components/ui/Checkbox";
 import { ColorPicker } from "../../../../components/ui/ColorPicker";
 import { Checklist } from "../../../../components/ui/Checklist";
 import { CounterField } from "./CounterField";
+import { IndicatorField } from "./IndicatorField";
 
 interface FieldFactoryProps {
   field: FieldConfig;
@@ -113,6 +114,9 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({
       return (
         <CounterField field={field} eventId={eventId} configId={configId} />
       );
+
+    case "indicator":
+      return <IndicatorField field={field} eventId={eventId} />;
 
     default:
       console.warn(`Unsupported field type: ${(field as any).type}`);
