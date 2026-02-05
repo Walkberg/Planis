@@ -39,7 +39,7 @@ export const ConfigListSidebar: React.FC = () => {
           <button
             key={config.id}
             onClick={() => setSelectedConfig(config)}
-            className="flex items-center gap-2 p-2 border-2 border-black rounded-lg bg-white hover:bg-gray-50 transition-all text-left cursor-pointer hover:scale-105"
+            className="flex items-center p-2 border-2 border-black rounded-lg bg-white hover:bg-gray-50 transition-all text-left cursor-pointer hover:scale-105"
           >
             <div
               className="w-5 h-5 rounded border-2 border-black flex-shrink-0"
