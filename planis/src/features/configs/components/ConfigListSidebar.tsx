@@ -27,19 +27,19 @@ export const ConfigListSidebar: React.FC = () => {
               fieldConfigs: [],
             })
           }
-          className="bg-neo-green border-2 border-black rounded-lg w-7 h-7 flex items-center justify-center font-bold text-lg shadow-neo-sm transition-all hover:bg-[#2ecc71] hover:scale-105"
+          className="bg-neo-green border-2 border-black rounded-lg w-7 h-7 flex items-center justify-center font-bold text-lg shadow-neo-sm transition-all hover:bg-[#2ecc71] hover:scale-105 cursor-pointer"
           title="Ajouter une configuration"
         >
           +
         </button>
       </div>
 
-      <div className="flex flex-col gap-1 overflow-y-auto">
+      <div className="flex flex-col gap-1 overflow-y-auto overflow-x-hidden">
         {configs.map((config) => (
           <button
             key={config.id}
             onClick={() => setSelectedConfig(config)}
-            className="flex items-center gap-2 p-2 border-2 border-black rounded-lg bg-white hover:bg-gray-50 transition-all text-left cursor-pointer"
+            className="flex items-center gap-2 p-2 border-2 border-black rounded-lg bg-white hover:bg-gray-50 transition-all text-left cursor-pointer hover:scale-105"
           >
             <div
               className="w-5 h-5 rounded border-2 border-black flex-shrink-0"
