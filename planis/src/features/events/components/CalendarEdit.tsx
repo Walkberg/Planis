@@ -11,6 +11,7 @@ export const CalendarEdit = () => {
     useEvents();
   const { configs } = useConfig();
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const previousEventIdRef = useRef<string | null>(null);
   const [currentConfig, setCurrentConfig] = useState<
     (typeof configs)[0] | null
   >(null);
@@ -20,9 +21,15 @@ export const CalendarEdit = () => {
       const config = configs.find((c) => c.id === selectedEvent.eventConfigId);
       setCurrentConfig(config || null);
 
-      if (titleInputRef.current) {
+      if (
+        titleInputRef.current &&
+        previousEventIdRef.current !== selectedEvent.id
+      ) {
         titleInputRef.current.focus();
+        previousEventIdRef.current = selectedEvent.id;
       }
+    } else {
+      previousEventIdRef.current = null;
     }
   }, [selectedEvent, configs]);
 
