@@ -33,6 +33,24 @@ export const CalendarEdit = () => {
     }
   }, [selectedEvent, configs]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!selectedEvent) return;
+
+      if (e.key === 'Delete') {
+      
+        if (window.confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')) {
+          deleteEvent();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedEvent, deleteEvent]);
+
   const handleClose = () => {
     setSelectedEvent(null);
   };
