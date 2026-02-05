@@ -1,5 +1,5 @@
-import React from 'react';
-import { useConfig } from '../providers/ConfigProvider';
+import React from "react";
+import { useConfig } from "../providers/ConfigProvider";
 
 export const ConfigList: React.FC = () => {
   const { configs, selectedConfig, setSelectedConfig, loading } = useConfig();
@@ -18,7 +18,6 @@ export const ConfigList: React.FC = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {/* System Configs */}
         {systemConfigs.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-sm uppercase mb-3 px-2">
@@ -31,8 +30,8 @@ export const ConfigList: React.FC = () => {
                   onClick={() => setSelectedConfig(config)}
                   className={`p-3 border-[3px] border-black rounded-lg transition-all ${
                     selectedConfig?.id === config.id
-                      ? 'bg-neo-cyan shadow-neo-md scale-105'
-                      : 'bg-white hover:bg-gray-50'
+                      ? "bg-neo-cyan shadow-neo-md scale-105"
+                      : "bg-white hover:bg-gray-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -44,7 +43,7 @@ export const ConfigList: React.FC = () => {
                     {config.fieldConfigs.length > 0 && (
                       <span className="ml-auto text-xs bg-neo-purple text-white px-2 py-1 rounded">
                         {config.fieldConfigs.length} champ
-                        {config.fieldConfigs.length > 1 ? 's' : ''}
+                        {config.fieldConfigs.length > 1 ? "s" : ""}
                       </span>
                     )}
                   </div>
@@ -53,8 +52,6 @@ export const ConfigList: React.FC = () => {
             </div>
           </div>
         )}
-
-        {/* User Configs */}
         {userConfigs.length > 0 && (
           <div className="mb-6">
             <h3 className="font-bold text-sm uppercase mb-3 px-2">
@@ -67,8 +64,8 @@ export const ConfigList: React.FC = () => {
                   onClick={() => setSelectedConfig(config)}
                   className={`p-3 border-[3px] border-black rounded-lg transition-all ${
                     selectedConfig?.id === config.id
-                      ? 'bg-neo-cyan shadow-neo-md scale-105'
-                      : 'bg-white hover:bg-gray-50'
+                      ? "bg-neo-cyan shadow-neo-md scale-105"
+                      : "bg-white hover:bg-gray-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -80,7 +77,7 @@ export const ConfigList: React.FC = () => {
                     {config.fieldConfigs.length > 0 && (
                       <span className="ml-auto text-xs bg-neo-purple text-white px-2 py-1 rounded">
                         {config.fieldConfigs.length} champ
-                        {config.fieldConfigs.length > 1 ? 's' : ''}
+                        {config.fieldConfigs.length > 1 ? "s" : ""}
                       </span>
                     )}
                   </div>
@@ -94,9 +91,9 @@ export const ConfigList: React.FC = () => {
       <button
         onClick={() =>
           setSelectedConfig({
-            id: '',
-            name: '',
-            color: '#00D9FF',
+            id: "",
+            name: "",
+            color: "#00D9FF",
             isAllDay: false,
             isSystemConfig: false,
             fieldConfigs: [],

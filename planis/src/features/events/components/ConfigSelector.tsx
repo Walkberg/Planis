@@ -10,7 +10,7 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
   selectedConfigId,
   onChange,
 }) => {
-  const { configs, loading, openManagement } = useConfig();
+  const { configs, loading, openManagement, setSelectedConfig } = useConfig();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -97,8 +97,14 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setIsOpen(false);
-                openManagement();
+                setSelectedConfig({
+                  id: "",
+                  name: "",
+                  color: "#00D9FF",
+                  isAllDay: false,
+                  isSystemConfig: false,
+                  fieldConfigs: [],
+                });
               }}
               title="Ajouter une configuration"
               className="w-10 bg-neo-green border-2 border-black rounded flex items-center justify-center font-bold text-xl hover:bg-[#20e985] transition-colors"

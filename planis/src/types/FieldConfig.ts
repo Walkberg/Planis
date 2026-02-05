@@ -67,5 +67,5 @@ export type ChecklistFieldConfig = BaseFieldConfig & {
 
 export type CounterFieldConfig = BaseFieldConfig & {
   type: "counter";
-  scope: "config" | "event"; // "config" = partagé par tous les événements de cette config, "event" = un compteur par événement
+  scope: "config" | "event";
 };
