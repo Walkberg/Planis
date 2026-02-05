@@ -23,8 +23,12 @@ export interface FieldConfig {
   visibilityRules?: Record<string, any>;
 }
 
+export type NumberFieldConfig = FieldConfig & {
+  type: "number";
+};
+
 export type TextFieldConfig = FieldConfig & {
-  type: "text" | "number" | "textarea";
+  type: "text" | "textarea";
 };
 
 export type SelectFieldConfig = FieldConfig & {
