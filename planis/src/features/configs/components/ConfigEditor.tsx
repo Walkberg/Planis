@@ -6,8 +6,6 @@ import type { FieldConfig } from "../../../types/FieldConfig";
 
 import { ColorPicker } from "../../../components/ui/ColorPicker";
 
-// const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E", "#3498db"];
-
 export const ConfigEditor: React.FC = () => {
   const {
     selectedConfig,
