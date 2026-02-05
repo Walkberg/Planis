@@ -17,22 +17,25 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
       value: `option_${Date.now()}`,
       label: "Nouvelle option",
     };
-    onChange({
+    const updatedField = {
       ...field,
       options: [...(field.options || []), newOption],
-    });
+    } as any;
+    onChange(updatedField);
   };
 
   const handleOptionUpdate = (index: number, updated: SelectOption) => {
     const newOptions = [...(field.options || [])];
     newOptions[index] = updated;
-    onChange({ ...field, options: newOptions });
+    const updatedField = { ...field, options: newOptions } as any;
+    onChange(updatedField);
   };
 
   const handleOptionRemove = (index: number) => {
     const newOptions = [...(field.options || [])];
     newOptions.splice(index, 1);
-    onChange({ ...field, options: newOptions });
+    const updatedField = { ...field, options: newOptions } as any;
+    onChange(updatedField);
   };
 
   return (
@@ -70,8 +73,8 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             onChange={(e) =>
               onChange({
                 ...field,
-                type: e.target.value as FieldConfig["type"],
-              })
+                type: e.target.value,
+              } as any as FieldConfig)
             }
             className="w-full p-2 border-[3px] border-black rounded-lg text-sm"
           >
@@ -81,6 +84,7 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             <option value="date">Date</option>
             <option value="boolean">Oui/Non</option>
             <option value="select">Liste déroulante</option>
+            <option value="color">Couleur</option>
           </select>
         </div>
         <div className="flex-1">

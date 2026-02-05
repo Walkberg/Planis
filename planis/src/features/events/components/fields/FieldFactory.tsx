@@ -4,6 +4,7 @@ import { Input } from '../../../../components/ui/Input';
 import { Textarea } from '../../../../components/ui/Textarea';
 import { Select } from '../../../../components/ui/Select';
 import { Checkbox } from '../../../../components/ui/Checkbox';
+import { ColorPicker } from '../../../../components/ui/ColorPicker';
 
 interface FieldFactoryProps {
   field: FieldConfig;
@@ -76,6 +77,15 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({ field, value, onChan
           value={value}
           onChange={(e) => onChange(e.target.value)}
           options={field.options || []}
+        />
+      );
+
+    case 'color':
+      return (
+        <ColorPicker
+          {...commonProps}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
         />
       );
 

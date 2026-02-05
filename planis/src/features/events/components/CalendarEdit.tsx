@@ -4,7 +4,9 @@ import { useConfig } from "../../configs/providers/ConfigProvider";
 import { ConfigSelector } from "./ConfigSelector";
 import { DynamicFieldsRenderer } from "./DynamicFieldsRenderer";
 
-const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E"];
+import { ColorPicker } from "../../../components/ui/ColorPicker";
+
+// const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E"];
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =
@@ -147,23 +149,11 @@ export const CalendarEdit = () => {
           />
         </div>
         <div>
-          <label className="block font-bold mb-2 text-sm uppercase">
-            Couleur
-          </label>
-          <div className="flex gap-2 flex-wrap">
-            {DEFAULT_COLORS.map((color) => (
-              <button
-                key={color}
-                onClick={() => updateEvent({ color })}
-                className={`w-[50px] h-[50px] rounded-[10px] cursor-pointer transition-all duration-200 ${
-                  selectedEvent.color === color
-                    ? "border-4 border-black shadow-neo-md scale-110"
-                    : "border-[3px] border-black"
-                }`}
-                style={{ background: color }}
-              />
-            ))}
-          </div>
+          <ColorPicker
+            label="Couleur"
+            value={selectedEvent.color}
+            onChange={(e) => updateEvent({ color: e.target.value })}
+          />
         </div>
         {currentConfig && (
           <DynamicFieldsRenderer

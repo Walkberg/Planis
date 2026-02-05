@@ -4,7 +4,9 @@ import { FieldConfigEditor } from "./FieldConfigEditor";
 import type { EventConfig } from "../../../types/EventConfig";
 import type { FieldConfig } from "../../../types/FieldConfig";
 
-const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E", "#3498db"];
+import { ColorPicker } from "../../../components/ui/ColorPicker";
+
+// const DEFAULT_COLORS = ["#ff6b35", "#00D9FF", "#7B2FBE", "#F7931E", "#3498db"];
 
 export const ConfigEditor: React.FC = () => {
   const {
@@ -148,23 +150,11 @@ export const ConfigEditor: React.FC = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block font-bold mb-2 text-sm uppercase">
-            Couleur par défaut
-          </label>
-          <div className="flex gap-2 flex-wrap">
-            {DEFAULT_COLORS.map((color) => (
-              <button
-                key={color}
-                onClick={() => setFormData({ ...formData, color })}
-                className={`w-12 h-12 rounded-lg cursor-pointer transition-all ${
-                  formData.color === color
-                    ? "border-4 border-black shadow-neo-md scale-110"
-                    : "border-[3px] border-black"
-                }`}
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
+          <ColorPicker
+            label="Couleur par défaut"
+            value={formData.color}
+            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+          />
         </div>
         <div className="mb-6">
           <label className="flex items-center gap-2 font-bold text-sm uppercase cursor-pointer">
