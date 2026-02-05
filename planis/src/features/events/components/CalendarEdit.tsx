@@ -5,6 +5,7 @@ import { ConfigSelector } from "./ConfigSelector";
 import { DynamicFieldsRenderer } from "./DynamicFieldsRenderer";
 import { ColorPicker } from "../../../components/ui/ColorPicker";
 import { RecurrencePicker } from "./RecurencyPicker";
+import { ColorField } from "../../../components/ui/ColorField";
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =
@@ -115,16 +116,21 @@ export const CalendarEdit = () => {
           <label className="block font-bold mb-2 text-sm uppercase">
             Titre
           </label>
-          <input
-            ref={titleInputRef}
-            type="text"
-            value={selectedEvent.title}
-            onChange={(e) => updateEvent({ title: e.target.value })}
-            placeholder="Entrez le titre de l'événement..."
-            className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
-          />
+          <div className="flex flex-row gap-2">
+            <ColorPicker
+              value={selectedEvent.color}
+              onChange={(e) => updateEvent({ color: e.target.value })}
+            />
+            <input
+              ref={titleInputRef}
+              type="text"
+              value={selectedEvent.title}
+              onChange={(e) => updateEvent({ title: e.target.value })}
+              placeholder="Entrez le titre de l'événement..."
+              className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
+            />
+          </div>
         </div>
-
         <div>
           <label className="flex items-center gap-2 font-bold mb-3 text-sm uppercase cursor-pointer">
             <input
@@ -174,11 +180,7 @@ export const CalendarEdit = () => {
             }
           }}
         />
-        <ColorPicker
-          label="Couleur"
-          value={selectedEvent.color}
-          onChange={(e) => updateEvent({ color: e.target.value })}
-        />
+
         {currentConfig && (
           <DynamicFieldsRenderer
             fieldConfigs={currentConfig.fieldConfigs}

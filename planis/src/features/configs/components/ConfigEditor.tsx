@@ -6,6 +6,7 @@ import type { FieldConfig } from "../../../types/FieldConfig";
 
 import { ColorPicker } from "../../../components/ui/ColorPicker";
 import { RecurrencePicker } from "../../events/components/RecurencyPicker";
+import { ColorField } from "../../../components/ui/ColorField";
 
 export const ConfigEditor: React.FC = () => {
   const {
@@ -149,7 +150,7 @@ export const ConfigEditor: React.FC = () => {
           />
         </div>
         <div className="mb-4">
-          <ColorPicker
+          <ColorField
             label="Couleur par défaut"
             value={formData.color}
             onChange={(e) =>
