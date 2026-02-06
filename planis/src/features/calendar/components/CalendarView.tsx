@@ -29,13 +29,13 @@ export const CalendarView = () => {
           gridTemplateColumns: `60px repeat(${displayDays.length}, 1fr)`,
         }}
       >
-        <div className="sticky top-0 bg-neo-yellow border-r-[3px] border-b-[3px] border-black z-[2]" />
+        <div className="sticky top-0 bg-neo-yellow border-r-[3px] border-b-[3px] border-black z-2" />
         {displayDays.map((day, i) => {
           const allDayEvents = events.filter(
             (event) => event.isAllDay && isSameDay(event.start, day),
           );
           return (
-            <div key={i} className="sticky top-0 z-[2]">
+            <div key={i} className="sticky top-0 z-2">
               <div
                 className={`border-[3px] border-black p-4 text-center font-bold ${
                   i === 0 ? "border-l-[3px]" : "border-l-0"
@@ -61,8 +61,8 @@ export const CalendarView = () => {
                       key={event.id}
                       className={`border-[3px] border-black rounded-lg px-2 py-1 cursor-pointer transition-all duration-200 ${
                         selectedEvent?.id === event.id
-                          ? "shadow-neo-md scale-[1.02] z-[10]"
-                          : "shadow-neo z-[5]"
+                          ? "shadow-neo-md scale-[1.02] z-10"
+                          : "shadow-neo z-5"
                       }`}
                       onClick={(e) => {
                         e.stopPropagation();
