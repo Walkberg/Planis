@@ -1,41 +1,27 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-interface PopoverProps {
-  trigger: React.ReactNode;
-  children: React.ReactNode;
-}
+const Popover = PopoverPrimitive.Root;
 
-export const Popover: React.FC<PopoverProps> = ({ trigger, children }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const popoverRef = useRef<HTMLDivElement>(null);
+const PopoverTrigger = PopoverPrimitive.Trigger;
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        popoverRef.current &&
-        !popoverRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
+const PopoverAnchor = PopoverPrimitive.Anchor;
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className = "", align = "center", sideOffset = 4, ...props }, ref) => (
+  <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Content
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset}
+      className={`z-50 min-w-32 overflow-hidden rounded-lg border-[3px] border-black bg-white shadow-neo-md animate-in ${className}`}
+      {...props}
+    />
+  </PopoverPrimitive.Portal>
+));
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-  return (
-    <div className="relative" ref={popoverRef}>
-      <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
-      {isOpen && (
-        <div className="absolute right-0 top-full mt-2 z-50 bg-white border-[3px] border-black rounded-lg shadow-neo-md min-w-[150px]">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-};
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
