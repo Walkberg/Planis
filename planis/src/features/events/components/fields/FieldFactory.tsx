@@ -24,49 +24,47 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({
   eventId,
   configId,
 }) => {
-  const commonProps = {
-    label: field.label,
-    placeholder: field.placeholder,
-    required: field.required,
-  };
-
   switch (field.type) {
     case "text":
       return (
         <Input
-          {...commonProps}
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
+          required={field.required}
         />
       );
 
     case "number":
       return (
         <Input
-          {...commonProps}
           type="number"
           value={value}
           onChange={(e) => onChange(e.target.valueAsNumber)}
+          placeholder={field.placeholder}
+          required={field.required}
         />
       );
 
     case "date":
       return (
         <Input
-          {...commonProps}
           type="date"
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
+          required={field.required}
         />
       );
 
     case "textarea":
       return (
         <Textarea
-          {...commonProps}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder}
+          required={field.required}
           rows={3}
         />
       );
@@ -84,26 +82,26 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({
     case "select":
       return (
         <Select
-          {...commonProps}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           options={field.options || []}
+          placeholder={field.placeholder}
+          required={field.required}
         />
       );
 
     case "color":
       return (
         <ColorPicker
-          {...commonProps}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          required={field.required}
         />
       );
 
     case "checklist":
       return (
         <Checklist
-          {...commonProps}
           options={field.options || []}
           value={Array.isArray(value) ? value : []}
           onChange={onChange}

@@ -63,27 +63,18 @@ export const IndicatorField: React.FC<IndicatorFieldProps> = ({
 
   if (loading) {
     return (
-      <div className="mb-4">
-        {field.label && (
-          <label className="block font-bold mb-2 text-sm uppercase">
-            {field.label}
-          </label>
-        )}
-        <div className="flex items-center justify-center p-4 bg-gray-100 border-[3px] border-black rounded-lg">
-          <span className="text-sm text-gray-500">Chargement...</span>
-        </div>
+      <div className="flex items-center justify-center p-4 bg-gray-100 border-[3px] border-black rounded-lg">
+        <span className="text-sm text-gray-500">Chargement...</span>
       </div>
     );
   }
 
   return (
     <Indicator
-      label={field.label}
       value={indicatorValue}
       min={field.min}
       max={field.max}
       onChange={handleChange}
-      required={field.required}
     />
   );
 };

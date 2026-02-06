@@ -75,26 +75,17 @@ export const CounterField: React.FC<CounterFieldProps> = ({
 
   if (loading) {
     return (
-      <div className="mb-4">
-        {field.label && (
-          <label className="block font-bold mb-2 text-sm uppercase">
-            {field.label}
-          </label>
-        )}
-        <div className="flex items-center justify-center p-4 bg-gray-100 border-[3px] border-black rounded-lg">
-          <span className="text-sm text-gray-500">Chargement...</span>
-        </div>
+      <div className="flex items-center justify-center p-4 bg-gray-100 border-[3px] border-black rounded-lg">
+        <span className="text-sm text-gray-500">Chargement...</span>
       </div>
     );
   }
 
   return (
     <Counter
-      label={field.label}
       value={counterValue}
       onIncrement={handleIncrement}
       onDecrement={handleDecrement}
-      required={field.required}
     />
   );
 };

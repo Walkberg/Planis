@@ -25,7 +25,7 @@ export const CustomFieldAction = ({
     <Popover>
       <PopoverTrigger asChild>
         <button
-          className="mt-7 p-2 hover:bg-gray-100 rounded-lg border-2 border-black bg-white transition-colors"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           title="Options du champ"
         >
           <svg

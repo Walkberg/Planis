@@ -34,6 +34,7 @@ export interface BaseFieldConfig {
   defaultValue?: any;
   required?: boolean;
   placeholder?: string;
+  displayLabel?: boolean;
   visibilityRules?: Record<string, any>;
 }
 
