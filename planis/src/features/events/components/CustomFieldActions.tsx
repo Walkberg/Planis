@@ -1,3 +1,4 @@
+import { MenuIcon } from "../../../components/ui/MenuIcon";
 import {
   Popover,
   PopoverContent,
@@ -30,17 +31,7 @@ export const CustomFieldAction = ({
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           title="Options du champ"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="3" cy="8" r="1.5" fill="currentColor" />
-            <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-            <circle cx="13" cy="8" r="1.5" fill="currentColor" />
-          </svg>
+          <MenuIcon />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="p-0 w-56">
