@@ -4,42 +4,25 @@ import { CalendarHour } from "./CalendarHour";
 import { CalendarEvents } from "../../events/components/CalendarEvents";
 import { CalendarDragGhost } from "./CalendarDragGhost";
 import { useEvents } from "../../events/providers/EventsProvider";
+import { CalendarTimeIndicator } from "./CalendarTimeIndicator";
+
+const hours = Array.from({ length: 24 }, (_, i) => i);
 
 export const CalendarView = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const { currentTime, getDisplayDays, isToday, isSameDay } = useCalendar();
   const { events, selectedEvent, setSelectedEvent } = useEvents();
   const displayDays = getDisplayDays();
-  const hours = Array.from({ length: 24 }, (_, i) => i);
 
   return (
     <div
       ref={calendarRef}
       className="flex-1 overflow-auto bg-neo-yellow relative"
     >
-      {(() => {
-        const now = currentTime;
-        const currentHour = now.getHours();
-        const currentMinutes = now.getMinutes();
-        const topPosition = currentHour * 60 + currentMinutes + 61;
-        const isTodayDisplayed = displayDays.some((day) => isToday(day));
-
-        if (isTodayDisplayed) {
-          return (
-            <div
-              className="absolute left-[60px] right-0 h-[3px] bg-neo-orange z-[100] pointer-events-none"
-              style={{
-                top: `${topPosition}px`,
-                boxShadow: "0 0 8px rgba(255, 107, 53, 0.6)",
-              }}
-            >
-              <div className="absolute -left-1.5 -top-[5px] w-3 h-3 rounded-full bg-neo-orange border-2 border-black" />
-            </div>
-          );
-        }
-        return null;
-      })()}
-
+      <CalendarTimeIndicator
+        currentTime={currentTime}
+        isTodayDisplayed={displayDays.some(isToday)}
+      />
       <div
         className="grid min-h-full"
         style={{
@@ -112,9 +95,7 @@ export const CalendarView = () => {
           )),
         )}
       </div>
-
       <CalendarDragGhost displayDays={displayDays} calendarRef={calendarRef} />
-
       <CalendarEvents displayDays={displayDays} calendarRef={calendarRef} />
     </div>
   );

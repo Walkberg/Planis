@@ -44,7 +44,7 @@ export const CalendarPreview = () => {
       <div className="bg-white border-4 border-black p-4 shadow-neo-lg rounded-xl">
         <div className="grid grid-cols-7 gap-1">
           {DAY_OF_WEEK.map((day, i) => (
-            <div key={i} className="text-center font-bold text-xs py-1">
+            <div key={i} className="text-center font-bold text-xs  py-1">
               {day}
             </div>
           ))}
@@ -52,7 +52,7 @@ export const CalendarPreview = () => {
             <div
               key={i}
               onClick={() => setCurrentDate(new Date(day.date))}
-              className={`text-center px-1 py-1 text-xs cursor-pointer border-2 border-black rounded-lg transition-all duration-200 hover:bg-neo-cyan ${
+              className={`text-center px-1 py-1 text-xs font-semibold cursor-pointer border-2 border-black rounded-lg transition-all duration-200 hover:bg-neo-cyan ${
                 isToday(day.date)
                   ? "bg-neo-orange font-bold"
                   : isSameDay(day.date, currentDate)
