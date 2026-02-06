@@ -1,7 +1,6 @@
 import React from "react";
 import { Mood } from "../../../components/ui/Mood";
 import type { MoodFieldConfig } from "../../../types/FieldConfig";
-import { Field, FieldContent, FieldLabel } from "../../../components/ui/Field";
 
 interface MoodFieldProps {
   config: MoodFieldConfig;
