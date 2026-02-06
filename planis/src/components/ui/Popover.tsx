@@ -24,4 +24,51 @@ const PopoverContent = React.forwardRef<
 
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+interface PopoverItemProps {
+  children: React.ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
+  variant?: "default" | "danger";
+}
+
+const PopoverItem: React.FC<PopoverItemProps> = ({
+  children,
+  onClick,
+  className = "",
+  variant = "default",
+}) => {
+  const variantClasses =
+    variant === "danger"
+      ? "hover:bg-neo-orange/20 text-neo-orange"
+      : "hover:bg-neo-cyan";
+
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full text-left px-4 py-3 transition-colors font-bold text-sm border-b-2 border-black last:border-b-0 ${variantClasses} ${className}`}
+    >
+      {children}
+    </button>
+  );
+};
+
+interface PopoverListProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const PopoverList: React.FC<PopoverListProps> = ({
+  children,
+  className = "",
+}) => {
+  return <div className={`flex flex-col ${className}`}>{children}</div>;
+};
+
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverItem,
+  PopoverList,
+};

@@ -4,6 +4,7 @@ import { CalendarHour } from "./CalendarHour";
 import { CalendarEvents } from "../../events/components/CalendarEvents";
 import { CalendarDragGhost } from "./CalendarDragGhost";
 import { useEvents } from "../../events/providers/EventsProvider";
+import { useConfig } from "../../configs/providers/ConfigProvider";
 import { CalendarTimeIndicator } from "./CalendarTimeIndicator";
 
 const hours = Array.from({ length: 24 }, (_, i) => i);
@@ -12,7 +13,12 @@ export const CalendarView = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const { currentTime, getDisplayDays, isToday, isSameDay } = useCalendar();
   const { events, selectedEvent, setSelectedEvent } = useEvents();
+  const { filteredConfigId } = useConfig();
   const displayDays = getDisplayDays();
+
+  const filteredEvents = filteredConfigId
+    ? events.filter((e) => e.eventConfigId === filteredConfigId)
+    : events;
 
   return (
     <div
@@ -31,7 +37,7 @@ export const CalendarView = () => {
       >
         <div className="sticky top-0 bg-neo-yellow border-r-[3px] border-b-[3px] border-black z-2" />
         {displayDays.map((day, i) => {
-          const allDayEvents = events.filter(
+          const allDayEvents = filteredEvents.filter(
             (event) => event.isAllDay && isSameDay(event.start, day),
           );
           return (
@@ -96,7 +102,11 @@ export const CalendarView = () => {
         )}
       </div>
       <CalendarDragGhost displayDays={displayDays} calendarRef={calendarRef} />
-      <CalendarEvents displayDays={displayDays} calendarRef={calendarRef} />
+      <CalendarEvents
+        displayDays={displayDays}
+        calendarRef={calendarRef}
+        filteredEvents={filteredEvents}
+      />
     </div>
   );
 };

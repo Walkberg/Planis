@@ -16,13 +16,17 @@ interface ConfigContextType {
   createConfig: (config: Omit<EventConfig, "id">) => Promise<void>;
   updateConfig: (id: string, updates: Partial<EventConfig>) => Promise<void>;
   deleteConfig: (id: string) => Promise<void>;
+  deleteConfigWithConversion: (id: string) => Promise<void>;
   canDeleteConfig: (id: string) => Promise<boolean>;
+  getConfigEventCount: (id: string) => Promise<number>;
   refreshConfigs: () => Promise<void>;
   isManagementOpen: boolean;
   openManagement: () => void;
   closeManagement: () => void;
   focusedFieldId: string | null;
   openManagementWithField: (configId: string, fieldId: string) => void;
+  filteredConfigId: string | null;
+  setFilteredConfigId: (configId: string | null) => void;
 }
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
@@ -47,6 +51,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
   );
   const [isManagementOpen, setIsManagementOpen] = useState(false);
   const [focusedFieldId, setFocusedFieldId] = useState<string | null>(null);
+  const [filteredConfigId, setFilteredConfigId] = useState<string | null>(null);
 
   const openManagement = () => setIsManagementOpen(true);
   const closeManagement = () => {
@@ -117,6 +122,43 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     return events.length === 0;
   };
 
+  const getConfigEventCount = async (id: string): Promise<number> => {
+    const events = await storageProvider.getEventsByConfigId(id);
+    return events.length;
+  };
+
+  const deleteConfigWithConversion = async (id: string): Promise<void> => {
+    const config = configs.find((c) => c.id === id);
+
+    if (config?.isSystemConfig) {
+      throw new Error("Cannot delete system configuration");
+    }
+
+    const baseConfig = configs.find((c) => c.id === "config-event");
+    if (!baseConfig) {
+      throw new Error("Base configuration not found");
+    }
+
+    const events = await storageProvider.getEventsByConfigId(id);
+    for (const event of events) {
+      await storageProvider.updateEvent(event.id, {
+        eventConfigId: baseConfig.id,
+        color: baseConfig.color,
+      });
+    }
+
+    await storageProvider.deleteConfig(id);
+    await refreshConfigs();
+
+    if (selectedConfig?.id === id) {
+      setSelectedConfig(null);
+    }
+
+    if (filteredConfigId === id) {
+      setFilteredConfigId(null);
+    }
+  };
+
   const deleteConfig = async (id: string): Promise<void> => {
     const config = configs.find((c) => c.id === id);
 
@@ -147,13 +189,17 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     createConfig,
     updateConfig,
     deleteConfig,
+    deleteConfigWithConversion,
     canDeleteConfig,
+    getConfigEventCount,
     refreshConfigs,
     isManagementOpen,
     openManagement,
     closeManagement,
     focusedFieldId,
     openManagementWithField,
+    filteredConfigId,
+    setFilteredConfigId,
   };
 
   return (
