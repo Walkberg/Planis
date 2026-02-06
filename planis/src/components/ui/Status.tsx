@@ -23,7 +23,7 @@ export const Status: React.FC<StatusProps> = ({
           key={status.value}
           type="button"
           onClick={() => onChange(status.value)}
-          className={`${isSmall ? "w-8 h-8 text-xl" : "w-10 h-10 text-2xl"} ${isSmall ? "border-2" : "border-2"} border-black rounded-lg font-bold transition-all ${
+          className={`${isSmall ? "w-8 h-8 text-xl" : "w-10 h-10 text-2xl"} ${isSmall ? "border-2" : "border-2"} border-black rounded-lg font-bold transition-transform ${
             value === status.value
               ? "bg-neo-yellow shadow-neo-md scale-110"
               : "bg-white shadow-neo-sm hover:bg-neo-yellow/50 hover:scale-105"
