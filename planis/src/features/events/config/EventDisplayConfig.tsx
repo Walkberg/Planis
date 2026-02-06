@@ -4,9 +4,13 @@ import type {
   FieldConfig,
   FieldType,
   IndicatorFieldConfig,
+  MoodFieldConfig,
+  StatusFieldConfig,
 } from "../../../types/FieldConfig";
 import { EventCounterField } from "../components/EventCounterField";
 import { EventIndicatorField } from "../components/EventIndicatorField";
+import { EventMoodField } from "../components/EventMoodField";
+import { EventStatusField } from "../components/EventStatusField";
 
 interface DisplayConfig {
   displayOnEvent: boolean;
@@ -31,6 +35,24 @@ export const displayConfig: Partial<Record<FieldType, DisplayConfig>> = {
     displayElement: (props) => (
       <EventIndicatorField
         config={props.field as IndicatorFieldConfig}
+        event={props.event}
+      />
+    ),
+  },
+  mood: {
+    displayOnEvent: true,
+    displayElement: (props) => (
+      <EventMoodField
+        config={props.field as MoodFieldConfig}
+        event={props.event}
+      />
+    ),
+  },
+  status: {
+    displayOnEvent: true,
+    displayElement: (props) => (
+      <EventStatusField
+        config={props.field as StatusFieldConfig}
         event={props.event}
       />
     ),

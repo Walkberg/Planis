@@ -8,11 +8,26 @@ export type FieldType =
   | "color"
   | "checklist"
   | "counter"
-  | "indicator";
+  | "indicator"
+  | "mood"
+  | "status";
 
 export interface SelectOption {
   value: string;
   label: string;
+}
+
+export interface MoodOption {
+  value: string;
+  label: string;
+  emoji: string;
+  color: string;
+}
+
+export interface StatusOption {
+  value: number;
+  label: string;
+  emoji: string;
 }
 
 export type FieldConfig =
@@ -24,7 +39,9 @@ export type FieldConfig =
   | ColorFieldConfig
   | ChecklistFieldConfig
   | CounterFieldConfig
-  | IndicatorFieldConfig;
+  | IndicatorFieldConfig
+  | MoodFieldConfig
+  | StatusFieldConfig;
 
 export interface BaseFieldConfig {
   id: string;
@@ -78,4 +95,12 @@ export type IndicatorFieldConfig = BaseFieldConfig & {
   type: "indicator";
   min: number;
   max: number;
+};
+
+export type MoodFieldConfig = BaseFieldConfig & {
+  type: "mood";
+};
+
+export type StatusFieldConfig = BaseFieldConfig & {
+  type: "status";
 };

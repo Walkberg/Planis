@@ -104,6 +104,8 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
             <option value="color">Couleur</option>
             <option value="counter">Compteur</option>
             <option value="indicator">Indicateur</option>
+            <option value="mood">Humeur</option>
+            <option value="status">État</option>
           </select>
         </div>
         <div className="flex-1">

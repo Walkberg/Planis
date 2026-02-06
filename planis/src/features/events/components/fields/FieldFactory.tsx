@@ -8,6 +8,8 @@ import { ColorPicker } from "../../../../components/ui/ColorPicker";
 import { Checklist } from "../../../../components/ui/Checklist";
 import { CounterField } from "./CounterField";
 import { IndicatorField } from "./IndicatorField";
+import { MoodField } from "../../../configs/fields/MoodField";
+import { StatusField } from "../../../configs/fields/StatusField";
 
 interface FieldFactoryProps {
   field: FieldConfig;
@@ -115,6 +117,12 @@ export const FieldFactory: React.FC<FieldFactoryProps> = ({
 
     case "indicator":
       return <IndicatorField field={field} eventId={eventId} />;
+
+    case "mood":
+      return <MoodField config={field} value={value} onChange={onChange} />;
+
+    case "status":
+      return <StatusField config={field} value={value} onChange={onChange} />;
 
     default:
       console.warn(`Unsupported field type: ${(field as any).type}`);
