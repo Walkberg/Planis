@@ -3,8 +3,6 @@ import { useConfig } from "../providers/ConfigProvider";
 import { FieldConfigEditor } from "./FieldConfigEditor";
 import type { EventConfig } from "../../../types/EventConfig";
 import type { FieldConfig } from "../../../types/FieldConfig";
-
-import { ColorPicker } from "../../../components/ui/ColorPicker";
 import { RecurrencePicker } from "../../events/components/RecurencyPicker";
 import { ColorField } from "../../../components/ui/ColorField";
 
@@ -16,6 +14,7 @@ export const ConfigEditor: React.FC = () => {
     createConfig,
     deleteConfig,
     canDeleteConfig,
+    focusedFieldId,
   } = useConfig();
 
   const [formData, setFormData] = useState<EventConfig | null>(null);
@@ -231,6 +230,7 @@ export const ConfigEditor: React.FC = () => {
                   field={field}
                   onChange={(updated) => handleUpdateField(index, updated)}
                   onRemove={() => handleRemoveField(index)}
+                  isFocused={focusedFieldId === field.id}
                 />
               ))}
             </div>

@@ -21,6 +21,8 @@ interface ConfigContextType {
   isManagementOpen: boolean;
   openManagement: () => void;
   closeManagement: () => void;
+  focusedFieldId: string | null;
+  openManagementWithField: (configId: string, fieldId: string) => void;
 }
 
 const ConfigContext = createContext<ConfigContextType | undefined>(undefined);
@@ -44,9 +46,22 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     null,
   );
   const [isManagementOpen, setIsManagementOpen] = useState(false);
+  const [focusedFieldId, setFocusedFieldId] = useState<string | null>(null);
 
   const openManagement = () => setIsManagementOpen(true);
-  const closeManagement = () => setIsManagementOpen(false);
+  const closeManagement = () => {
+    setIsManagementOpen(false);
+    setFocusedFieldId(null);
+  };
+
+  const openManagementWithField = (configId: string, fieldId: string) => {
+    const config = configs.find((c) => c.id === configId);
+    if (config) {
+      setSelectedConfig(config);
+      setFocusedFieldId(fieldId);
+      setIsManagementOpen(true);
+    }
+  };
 
   const refreshConfigs = async () => {
     try {
@@ -137,6 +152,8 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
     isManagementOpen,
     openManagement,
     closeManagement,
+    focusedFieldId,
+    openManagementWithField,
   };
 
   return (

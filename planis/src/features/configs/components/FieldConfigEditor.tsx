@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import type { FieldConfig, SelectOption } from "../../../types/FieldConfig";
 
 interface FieldConfigEditorProps {
   field: FieldConfig;
   onChange: (field: FieldConfig) => void;
   onRemove: () => void;
+  isFocused?: boolean;
 }
 
 export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
   field,
   onChange,
   onRemove,
+  isFocused = false,
 }) => {
+  const fieldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isFocused && fieldRef.current) {
+      fieldRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [isFocused]);
+
   const handleOptionAdd = () => {
     const newOption: SelectOption = {
       value: `option_${Date.now()}`,
@@ -39,7 +49,12 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
   };
 
   return (
-    <div className="border-[3px] border-black rounded-lg p-4 bg-white mb-3">
+    <div
+      ref={fieldRef}
+      className={`border-[3px] border-black rounded-lg p-4 bg-white mb-3 transition-all ${
+        isFocused ? "ring-4 ring-neo-orange shadow-neo-lg" : ""
+      }`}
+    >
       <div className="flex gap-3 mb-3">
         <div className="flex-1">
           <label className="block font-bold text-xs uppercase mb-2">
