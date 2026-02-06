@@ -21,7 +21,6 @@ export const CalendarEvent = ({
   const { handleResizeStart, isResizing, tempResizeEnd } = useDragInteraction();
   const { configs } = useConfig();
 
-  // Use tempResizeEnd if this event is being resized
   const effectiveEnd =
     isResizing === event.id && tempResizeEnd ? tempResizeEnd : event.end;
 
@@ -84,7 +83,7 @@ export const CalendarEvent = ({
           minute: "2-digit",
         })}{" "}
         -{" "}
-        {event.end.toLocaleTimeString("fr-FR", {
+        {effectiveEnd.toLocaleTimeString("fr-FR", {
           hour: "2-digit",
           minute: "2-digit",
         })}
