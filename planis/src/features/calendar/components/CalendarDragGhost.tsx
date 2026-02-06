@@ -3,7 +3,7 @@ import { useDragInteraction } from "../../interactions/providers/DragInteraction
 
 interface CalendarDragGhostProps {
   displayDays: Date[];
-  calendarRef: React.RefObject<HTMLDivElement>;
+  calendarRef: React.RefObject<HTMLDivElement> | null;
 }
 
 export const CalendarDragGhost = ({
@@ -33,7 +33,7 @@ export const CalendarDragGhost = ({
   const topPosition = startHour * 60 + 61;
   const height = duration * 60;
 
-  const gridRef = calendarRef.current;
+  const gridRef = calendarRef?.current;
   let leftPosition = 60;
   let columnWidth = 200;
 

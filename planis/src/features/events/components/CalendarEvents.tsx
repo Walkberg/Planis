@@ -6,7 +6,7 @@ import { expandEvents } from "../../../utils/recurrenceUtils";
 
 interface CalendarEventsProps {
   displayDays: Date[];
-  calendarRef: React.RefObject<HTMLElement>;
+  calendarRef: React.RefObject<HTMLElement> | null;
 }
 
 export const CalendarEvents = ({
@@ -25,6 +25,8 @@ export const CalendarEvents = ({
   const expandedEvents = React.useMemo(() => {
     return expandEvents(events, startDate, rangeEnd);
   }, [events, startDate, rangeEnd]);
+
+  if (!calendarRef) return null;
 
   return (
     <>
