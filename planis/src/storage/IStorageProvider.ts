@@ -4,6 +4,7 @@ import type { Counter } from "../types/Counter";
 import type { Indicator } from "../types/Indicator";
 import type { Mood } from "../types/Mood";
 import type { Status } from "../types/Status";
+import type { StatsDateRange } from "../types/StatsTypes";
 
 export interface IStorageProvider {
   initialize(): Promise<void>;
@@ -42,4 +43,21 @@ export interface IStorageProvider {
   saveStatus(status: Status): Promise<void>;
   updateStatusValue(id: string, value: number): Promise<void>;
   getStatusByEventId(eventId: string): Promise<Status[]>;
+
+  getCountersWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Counter & { eventDate: Date }>>;
+  getIndicatorsWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Indicator & { eventDate: Date }>>;
+  getMoodsWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Mood & { eventDate: Date }>>;
+  getStatusWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Status & { eventDate: Date }>>;
 }

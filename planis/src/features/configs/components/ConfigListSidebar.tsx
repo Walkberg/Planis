@@ -9,6 +9,11 @@ import {
 } from "../../../components/ui/Popover";
 import { MenuIcon } from "../../../components/ui/MenuIcon";
 import { DeleteConfigModal } from "./DeleteConfigModal";
+import { StatsModal } from "./StatsModal";
+import { FieldStatsSelector } from "./FieldStatsSelector";
+import type { FieldConfig } from "../../../types/FieldConfig";
+import type { EventConfig } from "../../../types/EventConfig";
+import { statsConfig } from "../StatsConfig";
 
 export const ConfigListSidebar: React.FC = () => {
   const {
@@ -27,6 +32,11 @@ export const ConfigListSidebar: React.FC = () => {
     name: string;
     eventCount: number;
   } | null>(null);
+  const [statsModalField, setStatsModalField] = useState<FieldConfig | null>(
+    null,
+  );
+  const [selectedEventConfigForStats, setSelectedEventConfigForStats] =
+    useState<EventConfig | null>(null);
 
   const handleDeleteClick = async (
     e: React.MouseEvent,
@@ -61,6 +71,30 @@ export const ConfigListSidebar: React.FC = () => {
   const handleFilterClick = (e: React.MouseEvent, configId: string) => {
     e.stopPropagation();
     setFilteredConfigId(filteredConfigId === configId ? null : configId);
+  };
+
+  const handleStatsClick = (e: React.MouseEvent, config: EventConfig) => {
+    e.stopPropagation();
+    const statsEligibleFields = config.fieldConfigs.filter(
+      (field) => statsConfig[field.type] !== undefined,
+    );
+
+    if (statsEligibleFields.length === 1) {
+      setStatsModalField(statsEligibleFields[0]);
+    } else if (statsEligibleFields.length > 1) {
+      setSelectedEventConfigForStats(config);
+    }
+  };
+
+  const handleFieldSelect = (field: FieldConfig) => {
+    setSelectedEventConfigForStats(null);
+    setStatsModalField(field);
+  };
+
+  const hasStatsSupport = (config: EventConfig) => {
+    return config.fieldConfigs?.some(
+      (field) => statsConfig[field.type] !== undefined,
+    );
   };
 
   if (loading) {
@@ -128,6 +162,11 @@ export const ConfigListSidebar: React.FC = () => {
 
                 <PopoverContent align="end" className="p-0 w-56">
                   <PopoverList>
+                    {hasStatsSupport(config) && (
+                      <PopoverItem onClick={(e) => handleStatsClick(e, config)}>
+                        📊 Voir les statistiques
+                      </PopoverItem>
+                    )}
                     <PopoverItem
                       onClick={(e) => handleFilterClick(e, config.id)}
                     >
@@ -161,6 +200,21 @@ export const ConfigListSidebar: React.FC = () => {
           onConfirm={handleConfirmDelete}
           configName={configToDelete.name}
           eventCount={configToDelete.eventCount}
+        />
+      )}
+
+      {selectedEventConfigForStats && (
+        <FieldStatsSelector
+          config={selectedEventConfigForStats}
+          onSelectField={handleFieldSelect}
+          onClose={() => setSelectedEventConfigForStats(null)}
+        />
+      )}
+
+      {statsModalField && (
+        <StatsModal
+          config={statsModalField}
+          onClose={() => setStatsModalField(null)}
         />
       )}
     </>

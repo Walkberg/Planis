@@ -5,6 +5,7 @@ import type { Counter } from "../types/Counter";
 import type { Indicator } from "../types/Indicator";
 import type { Mood } from "../types/Mood";
 import type { Status } from "../types/Status";
+import type { StatsDateRange } from "../types/StatsTypes";
 import type { IStorageProvider } from "./IStorageProvider";
 
 interface PlanisDB extends DBSchema {
@@ -354,6 +355,119 @@ export class IndexedDBStorageProvider implements IStorageProvider {
       eventId,
     );
     return statuses;
+  }
+
+  // Stats methods
+  async getCountersWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Counter & { eventDate: Date }>> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const counters = await this.db.getAllFromIndex(
+      "counters",
+      "by-field",
+      configId,
+    );
+
+    const result: Array<Counter & { eventDate: Date }> = [];
+
+    for (const counter of counters) {
+      if (!counter.eventId) continue;
+      const event = await this.getEventById(counter.eventId);
+      if (
+        event &&
+        event.start >= dateRange.start &&
+        event.start <= dateRange.end
+      ) {
+        result.push({ ...counter, eventDate: event.start });
+      }
+    }
+
+    return result;
+  }
+
+  async getIndicatorsWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Indicator & { eventDate: Date }>> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const indicators = await this.db.getAllFromIndex(
+      "indicators",
+      "by-field",
+      configId,
+    );
+
+    const result: Array<Indicator & { eventDate: Date }> = [];
+
+    for (const indicator of indicators) {
+      if (!indicator.eventId) continue;
+      const event = await this.getEventById(indicator.eventId);
+      if (
+        event &&
+        event.start >= dateRange.start &&
+        event.start <= dateRange.end
+      ) {
+        result.push({ ...indicator, eventDate: event.start });
+      }
+    }
+
+    return result;
+  }
+
+  async getMoodsWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Mood & { eventDate: Date }>> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const moods = await this.db.getAllFromIndex("moods", "by-field", configId);
+
+    const result: Array<Mood & { eventDate: Date }> = [];
+
+    for (const mood of moods) {
+      if (!mood.eventId) continue;
+      const event = await this.getEventById(mood.eventId);
+      if (
+        event &&
+        event.start >= dateRange.start &&
+        event.start <= dateRange.end
+      ) {
+        result.push({ ...mood, eventDate: event.start });
+      }
+    }
+
+    return result;
+  }
+
+  async getStatusWithinRange(
+    configId: string,
+    dateRange: StatsDateRange,
+  ): Promise<Array<Status & { eventDate: Date }>> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const statuses = await this.db.getAllFromIndex(
+      "status",
+      "by-field",
+      configId,
+    );
+
+    const result: Array<Status & { eventDate: Date }> = [];
+
+    for (const status of statuses) {
+      if (!status.eventId) continue;
+      const event = await this.getEventById(status.eventId);
+      if (
+        event &&
+        event.start >= dateRange.start &&
+        event.start <= dateRange.end
+      ) {
+        result.push({ ...status, eventDate: event.start });
+      }
+    }
+
+    return result;
   }
 }
 
