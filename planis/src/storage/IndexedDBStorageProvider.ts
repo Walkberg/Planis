@@ -3,6 +3,8 @@ import { DEFAULT_CONFIGS, type EventConfig } from "../types/EventConfig";
 import type { CalendarEvent } from "../types";
 import type { Counter } from "../types/Counter";
 import type { Indicator } from "../types/Indicator";
+import type { Mood } from "../types/Mood";
+import type { Status } from "../types/Status";
 import type { IStorageProvider } from "./IStorageProvider";
 
 interface PlanisDB extends DBSchema {
@@ -25,12 +27,22 @@ interface PlanisDB extends DBSchema {
     value: Indicator;
     indexes: { "by-event": string; "by-field": string };
   };
+  moods: {
+    key: string;
+    value: Mood;
+    indexes: { "by-event": string; "by-field": string };
+  };
+  status: {
+    key: string;
+    value: Status;
+    indexes: { "by-event": string; "by-field": string };
+  };
 }
 
 export class IndexedDBStorageProvider implements IStorageProvider {
   private db: IDBPDatabase<PlanisDB> | null = null;
   private readonly DB_NAME = "PlanisDB";
-  private readonly DB_VERSION = 3;
+  private readonly DB_VERSION = 4;
 
   async initialize(): Promise<void> {
     this.db = await openDB<PlanisDB>(this.DB_NAME, this.DB_VERSION, {
@@ -61,6 +73,22 @@ export class IndexedDBStorageProvider implements IStorageProvider {
           });
           indicatorStore.createIndex("by-event", "eventId");
           indicatorStore.createIndex("by-field", "fieldId");
+        }
+
+        if (!db.objectStoreNames.contains("moods")) {
+          const moodStore = db.createObjectStore("moods", {
+            keyPath: "id",
+          });
+          moodStore.createIndex("by-event", "eventId");
+          moodStore.createIndex("by-field", "fieldId");
+        }
+
+        if (!db.objectStoreNames.contains("status")) {
+          const statusStore = db.createObjectStore("status", {
+            keyPath: "id",
+          });
+          statusStore.createIndex("by-event", "eventId");
+          statusStore.createIndex("by-field", "fieldId");
         }
       },
     });
@@ -264,6 +292,68 @@ export class IndexedDBStorageProvider implements IStorageProvider {
       eventId,
     );
     return indicators;
+  }
+
+  async getMood(id: string): Promise<Mood | null> {
+    if (!this.db) throw new Error("Database not initialized");
+    const mood = await this.db.get("moods", id);
+    return mood || null;
+  }
+
+  async saveMood(mood: Mood): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db.put("moods", mood);
+  }
+
+  async updateMoodValue(id: string, value: string): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    let mood = await this.getMood(id);
+
+    if (!mood) {
+      throw new Error(`Mood with id ${id} not found`);
+    }
+
+    mood.value = value;
+    await this.saveMood(mood);
+  }
+
+  async getMoodsByEventId(eventId: string): Promise<Mood[]> {
+    if (!this.db) throw new Error("Database not initialized");
+    const moods = await this.db.getAllFromIndex("moods", "by-event", eventId);
+    return moods;
+  }
+
+  async getStatus(id: string): Promise<Status | null> {
+    if (!this.db) throw new Error("Database not initialized");
+    const status = await this.db.get("status", id);
+    return status || null;
+  }
+
+  async saveStatus(status: Status): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    await this.db.put("status", status);
+  }
+
+  async updateStatusValue(id: string, value: number): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+    let status = await this.getStatus(id);
+
+    if (!status) {
+      throw new Error(`Status with id ${id} not found`);
+    }
+
+    status.value = value;
+    await this.saveStatus(status);
+  }
+
+  async getStatusByEventId(eventId: string): Promise<Status[]> {
+    if (!this.db) throw new Error("Database not initialized");
+    const statuses = await this.db.getAllFromIndex(
+      "status",
+      "by-event",
+      eventId,
+    );
+    return statuses;
   }
 }
 
