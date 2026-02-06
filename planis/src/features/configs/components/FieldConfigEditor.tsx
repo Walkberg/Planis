@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import type { FieldConfig, SelectOption } from "../../../types/FieldConfig";
-
+import { EyeIcon } from "../../../components/ui/EyeIcon";
+import { displayConfig } from "../../events/config/EventDisplayConfig";
 interface FieldConfigEditorProps {
   field: FieldConfig;
   onChange: (field: FieldConfig) => void;
@@ -131,6 +132,26 @@ export const FieldConfigEditor: React.FC<FieldConfigEditorProps> = ({
           />
           <span className="text-sm font-bold">Requis</span>
         </label>
+
+        {displayConfig[field.type]?.displayOnEvent && (
+          <label
+            className="flex items-center gap-2 cursor-pointer"
+            title="Afficher ce champ directement sur la tuile d'événement"
+          >
+            <input
+              type="checkbox"
+              checked={field.displayOnEvent || false}
+              onChange={(e) =>
+                onChange({ ...field, displayOnEvent: e.target.checked })
+              }
+              className="w-4 h-4 cursor-pointer accent-neo-cyan"
+            />
+            <span className="text-sm font-bold flex items-center gap-1">
+              <EyeIcon className="w-4 h-4" />
+              <span>Afficher sur l'événement</span>
+            </span>
+          </label>
+        )}
       </div>
 
       {field.type === "counter" && (

@@ -1,6 +1,8 @@
 import type { CalendarEvent as CalendarEventType } from "../../../types";
 import { useEvents } from "../providers/EventsProvider";
 import { useDragInteraction } from "../../interactions/providers/DragInteractionProvider";
+import { useConfig } from "../../configs/providers/ConfigProvider";
+import { EventFieldFactory } from "./EventFieldFactory";
 
 interface CalendarEventProps {
   event: CalendarEventType;
@@ -17,6 +19,7 @@ export const CalendarEvent = ({
 }: CalendarEventProps) => {
   const { selectedEvent, setSelectedEvent } = useEvents();
   const { handleResizeStart } = useDragInteraction();
+  const { configs } = useConfig();
 
   const startHour = event.start.getHours() + event.start.getMinutes() / 60;
   const endHour = event.end.getHours() + event.end.getMinutes() / 60;
@@ -35,12 +38,20 @@ export const CalendarEvent = ({
     leftPosition = 60 + dayIndex * columnWidth;
   }
 
+  const config = event.eventConfigId
+    ? configs.find((c) => c.id === event.eventConfigId)
+    : null;
+  const displayFields =
+    height >= 80 && config && config.fieldConfigs
+      ? config.fieldConfigs.filter((field) => field.displayOnEvent)
+      : [];
+
   return (
     <div
       className={`event absolute border-[3px] border-black rounded-[10px] p-2 cursor-pointer transition-all duration-200 ${
         selectedEvent?.id === event.id
-          ? "shadow-neo-md scale-[1.02] z-[10]"
-          : "shadow-neo z-[5]"
+          ? "shadow-neo-md scale-[1.02] z-10"
+          : "shadow-neo z-5"
       }`}
       onClick={(e) => {
         e.stopPropagation();
@@ -63,7 +74,7 @@ export const CalendarEvent = ({
       <div className="font-bold text-xs mb-1 overflow-hidden text-ellipsis whitespace-nowrap">
         {event.title || "Sans titre"}
       </div>
-      <div className="text-[10px]">
+      <div className="text-[10px] mb-2">
         {event.start.toLocaleTimeString("fr-FR", {
           hour: "2-digit",
           minute: "2-digit",
@@ -74,6 +85,14 @@ export const CalendarEvent = ({
           minute: "2-digit",
         })}
       </div>
+      {displayFields.length > 0 && (
+        <div className="flex flex-col gap-2 mt-2">
+          {displayFields.map((field) => (
+            <EventFieldFactory key={field.id} field={field} event={event} />
+          ))}
+        </div>
+      )}
+
       <div
         onMouseDown={(e) => handleResizeStart(event, e)}
         className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize bg-black opacity-30"

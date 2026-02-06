@@ -1,4 +1,5 @@
 import React from "react";
+import { Slider } from "./Slider";
 
 interface IndicatorProps {
   value: number;
@@ -20,8 +21,6 @@ export const Indicator: React.FC<IndicatorProps> = ({
     }
   };
 
-  const percentage = ((value - min) / (max - min)) * 100;
-
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-3">
@@ -29,17 +28,7 @@ export const Indicator: React.FC<IndicatorProps> = ({
           {min}
         </span>
         <div className="flex-1 relative">
-          <input
-            type="range"
-            min={min}
-            max={max}
-            value={value}
-            onChange={handleChange}
-            className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer border-2 border-black"
-            style={{
-              background: `linear-gradient(to right, #00D9FF 0%, #00D9FF ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`,
-            }}
-          />
+          <Slider min={min} max={max} value={value} onChange={onChange} />
         </div>
         <span className="text-sm font-bold text-gray-600 w-10">{max}</span>
       </div>
