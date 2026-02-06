@@ -3,6 +3,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react";
 import { useEvents } from "../../events/providers/EventsProvider";
@@ -20,6 +21,7 @@ interface DragInteractionContextType {
   isResizing: boolean | string;
   dragStart: DragState | null;
   dragEnd: DragState | null;
+  tempResizeEnd: Date | null;
   handleMouseDown: (
     day: Date,
     hour: number,
@@ -51,11 +53,18 @@ interface DragInteractionProviderProps {
 export const DragInteractionProvider: React.FC<
   DragInteractionProviderProps
 > = ({ children }) => {
-  const { addEvent, setSelectedEvent, removeDrafts } = useEvents();
+  const { addEvent, setSelectedEvent, removeDrafts, updateEvent } = useEvents();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState<DragState | null>(null);
   const [dragEnd, setDragEnd] = useState<DragState | null>(null);
   const [isResizing, setIsResizing] = useState<boolean | string>(false);
+  const [tempResizeEnd, setTempResizeEnd] = useState<Date | null>(null);
+
+  const resizeStateRef = useRef<{
+    event: CalendarEvent;
+    startY: number;
+    originalEndTime: Date;
+  } | null>(null);
 
   const handleMouseDown = (
     day: Date,
@@ -86,15 +95,59 @@ export const DragInteractionProvider: React.FC<
     e.stopPropagation();
     setIsResizing(event.id);
     setSelectedEvent(event);
+    setTempResizeEnd(null);
+    resizeStateRef.current = {
+      event,
+      startY: e.clientY,
+      originalEndTime: new Date(event.end),
+    };
   };
 
-  const handleResizeMove = () => {
+  useEffect(() => {
     if (!isResizing) return;
-  };
 
-  const handleResizeEnd = () => {
-    setIsResizing(false);
-  };
+    const handleResizeMove = (e: MouseEvent) => {
+      if (!resizeStateRef.current) return;
+
+      const deltaY = e.clientY - resizeStateRef.current.startY;
+      const deltaMinutes = Math.round(((deltaY / 60) * 60) / 15) * 15;
+
+      const newEndTime = new Date(resizeStateRef.current.originalEndTime);
+      newEndTime.setMinutes(newEndTime.getMinutes() + deltaMinutes);
+
+      const minEndTime = new Date(resizeStateRef.current.event.start);
+      minEndTime.setMinutes(minEndTime.getMinutes() + 15);
+
+      if (newEndTime < minEndTime) {
+        newEndTime.setTime(minEndTime.getTime());
+      }
+
+      setTempResizeEnd(newEndTime);
+    };
+
+    const handleResizeEnd = async () => {
+      if (!resizeStateRef.current || !tempResizeEnd) {
+        setIsResizing(false);
+        setTempResizeEnd(null);
+        resizeStateRef.current = null;
+        return;
+      }
+
+      await updateEvent({ end: tempResizeEnd });
+
+      setIsResizing(false);
+      setTempResizeEnd(null);
+      resizeStateRef.current = null;
+    };
+
+    window.addEventListener("mousemove", handleResizeMove);
+    window.addEventListener("mouseup", handleResizeEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleResizeMove);
+      window.removeEventListener("mouseup", handleResizeEnd);
+    };
+  }, [isResizing, tempResizeEnd, updateEvent]);
 
   useEffect(() => {
     const handleGlobalMouseUp = async () => {
@@ -112,12 +165,12 @@ export const DragInteractionProvider: React.FC<
       }
 
       const newEvent = {
-        title: '',
+        title: "",
         start: dragStart.startTime!,
         end: endTime,
-        color: '#ff6b35',
+        color: "#ff6b35",
         isAllDay: false,
-        eventConfigId: 'config-event',
+        eventConfigId: "config-event",
         customFieldsValues: {},
         isDraft: true,
       };
@@ -143,22 +196,12 @@ export const DragInteractionProvider: React.FC<
     removeDrafts,
   ]);
 
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener("mousemove", handleResizeMove);
-      window.addEventListener("mouseup", handleResizeEnd);
-      return () => {
-        window.removeEventListener("mousemove", handleResizeMove);
-        window.removeEventListener("mouseup", handleResizeEnd);
-      };
-    }
-  }, [isResizing]);
-
   const value: DragInteractionContextType = {
     isDragging,
     isResizing,
     dragStart,
     dragEnd,
+    tempResizeEnd,
     handleMouseDown,
     handleMouseEnterCell,
     handleResizeStart,

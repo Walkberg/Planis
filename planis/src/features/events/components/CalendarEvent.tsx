@@ -18,11 +18,15 @@ export const CalendarEvent = ({
   calendarRef,
 }: CalendarEventProps) => {
   const { selectedEvent, setSelectedEvent } = useEvents();
-  const { handleResizeStart } = useDragInteraction();
+  const { handleResizeStart, isResizing, tempResizeEnd } = useDragInteraction();
   const { configs } = useConfig();
 
+  // Use tempResizeEnd if this event is being resized
+  const effectiveEnd =
+    isResizing === event.id && tempResizeEnd ? tempResizeEnd : event.end;
+
   const startHour = event.start.getHours() + event.start.getMinutes() / 60;
-  const endHour = event.end.getHours() + event.end.getMinutes() / 60;
+  const endHour = effectiveEnd.getHours() + effectiveEnd.getMinutes() / 60;
   const duration = endHour - startHour;
 
   const topPosition = startHour * 60 + 61;
@@ -92,11 +96,13 @@ export const CalendarEvent = ({
           ))}
         </div>
       )}
-
       <div
         onMouseDown={(e) => handleResizeStart(event, e)}
-        className="absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize bg-black opacity-30"
-      />
+        className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-black/50 transition-colors group"
+        title="Glisser pour redimensionner"
+      >
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-black/40 group-hover:bg-black/70 rounded-full" />
+      </div>
     </div>
   );
 };
