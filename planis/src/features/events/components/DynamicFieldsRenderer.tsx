@@ -7,6 +7,7 @@ import {
   PopoverContent,
 } from "../../../components/ui/Popover";
 import { useConfig } from "../../configs/providers/ConfigProvider";
+import { CustomFieldAction } from "./CustomFieldActions";
 
 interface DynamicFieldsRendererProps {
   fieldConfigs: FieldConfig[];
@@ -23,15 +24,9 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
   eventId,
   configId,
 }) => {
-  const { openManagementWithField } = useConfig();
-
   if (fieldConfigs.length === 0) {
     return null;
   }
-
-  const handleEditField = (fieldId: string) => {
-    openManagementWithField(configId, fieldId);
-  };
 
   return (
     <div className="pt-4 mt-4">
@@ -48,36 +43,7 @@ export const DynamicFieldsRenderer: React.FC<DynamicFieldsRendererProps> = ({
                   configId={configId}
                 />
               </div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    className="mt-7 p-2 hover:bg-gray-100 rounded-lg border-2 border-black bg-white transition-colors"
-                    title="Options du champ"
-                  >
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle cx="3" cy="8" r="1.5" fill="currentColor" />
-                      <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-                      <circle cx="13" cy="8" r="1.5" fill="currentColor" />
-                    </svg>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent align="end" className="p-0 w-56">
-                  <div className="flex flex-col">
-                    <button
-                      onClick={() => handleEditField(field.id)}
-                      className="w-full text-left px-4 py-3 hover:bg-neo-cyan transition-colors font-bold text-sm border-b-2 border-black"
-                    >
-                      Éditer le champ
-                    </button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+              <CustomFieldAction configId={configId} fieldConfig={field} />
             </div>
           </div>
         ))}
