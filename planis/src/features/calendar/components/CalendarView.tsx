@@ -3,6 +3,7 @@ import { useCalendar } from "../providers/CalendarProvider";
 import { CalendarHour } from "./CalendarHour";
 import { CalendarEvents } from "../../events/components/CalendarEvents";
 import { CalendarDragGhost } from "./CalendarDragGhost";
+import { CalendarEventDragGhost } from "./CalendarEventDragGhost";
 import { useEvents } from "../../events/providers/EventsProvider";
 import { useConfig } from "../../configs/providers/ConfigProvider";
 import { CalendarTimeIndicator } from "./CalendarTimeIndicator";
@@ -115,6 +116,7 @@ export const CalendarView = () => {
         )}
       </div>
       <CalendarDragGhost displayDays={displayDays} calendarRef={calendarRef} />
+      <CalendarEventDragGhost />
       <CalendarEvents
         displayDays={displayDays}
         calendarRef={calendarRef}

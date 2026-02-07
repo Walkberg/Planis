@@ -16,9 +16,24 @@ interface DragState {
   endTime?: Date;
 }
 
+interface MousePosition {
+  x: number;
+  y: number;
+}
+
+interface TargetDropPosition {
+  day: Date;
+  startTime: Date;
+  endTime: Date;
+}
+
 interface DragInteractionContextType {
   isDragging: boolean;
   isResizing: boolean | string;
+  isDraggingEvent: boolean;
+  draggedEvent: CalendarEvent | null;
+  mousePosition: MousePosition | null;
+  targetDropPosition: TargetDropPosition | null;
   dragStart: DragState | null;
   dragEnd: DragState | null;
   tempResizeEnd: Date | null;
@@ -30,6 +45,8 @@ interface DragInteractionContextType {
   ) => void;
   handleMouseEnterCell: (day: Date, hour: number, minutes: number) => void;
   handleResizeStart: (event: CalendarEvent, e: React.MouseEvent) => void;
+  handleEventDragStart: (event: CalendarEvent, e: React.MouseEvent) => void;
+  handleEventDragMove: (day: Date, hour: number, minutes: number) => void;
 }
 
 const DragInteractionContext = createContext<
@@ -60,6 +77,14 @@ export const DragInteractionProvider: React.FC<
   const [isResizing, setIsResizing] = useState<boolean | string>(false);
   const [tempResizeEnd, setTempResizeEnd] = useState<Date | null>(null);
 
+  const [isDraggingEvent, setIsDraggingEvent] = useState(false);
+  const [draggedEvent, setDraggedEvent] = useState<CalendarEvent | null>(null);
+  const [mousePosition, setMousePosition] = useState<MousePosition | null>(
+    null,
+  );
+  const [targetDropPosition, setTargetDropPosition] =
+    useState<TargetDropPosition | null>(null);
+
   const resizeStateRef = useRef<{
     event: CalendarEvent;
     startY: number;
@@ -80,6 +105,28 @@ export const DragInteractionProvider: React.FC<
     setIsDragging(true);
     setDragStart({ day, hour, startTime });
     setDragEnd({ day, hour, startTime });
+  };
+
+  const handleEventDragStart = (event: CalendarEvent, e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest(".resize-handle")) return;
+    e.stopPropagation();
+
+    setIsDraggingEvent(true);
+    setDraggedEvent(event);
+    setMousePosition({ x: e.clientX, y: e.clientY });
+    setSelectedEvent(event);
+  };
+
+  const handleEventDragMove = (day: Date, hour: number, minutes: number) => {
+    if (!isDraggingEvent || !draggedEvent) return;
+
+    const startTime = new Date(day);
+    startTime.setHours(hour, minutes, 0, 0);
+
+    const duration = draggedEvent.end.getTime() - draggedEvent.start.getTime();
+    const endTime = new Date(startTime.getTime() + duration);
+
+    setTargetDropPosition({ day, startTime, endTime });
   };
 
   const handleMouseEnterCell = (day: Date, hour: number, minutes: number) => {
@@ -150,6 +197,43 @@ export const DragInteractionProvider: React.FC<
   }, [isResizing, tempResizeEnd, updateEvent]);
 
   useEffect(() => {
+    if (!isDraggingEvent) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseUp = async () => {
+      if (!draggedEvent || !targetDropPosition) {
+        setIsDraggingEvent(false);
+        setDraggedEvent(null);
+        setMousePosition(null);
+        setTargetDropPosition(null);
+        return;
+      }
+
+      await updateEvent({
+        ...draggedEvent,
+        start: targetDropPosition.startTime,
+        end: targetDropPosition.endTime,
+      });
+
+      setIsDraggingEvent(false);
+      setDraggedEvent(null);
+      setMousePosition(null);
+      setTargetDropPosition(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDraggingEvent, draggedEvent, targetDropPosition, updateEvent]);
+
+  useEffect(() => {
     const handleGlobalMouseUp = async () => {
       if (!isDragging || !dragStart) return;
 
@@ -199,12 +283,18 @@ export const DragInteractionProvider: React.FC<
   const value: DragInteractionContextType = {
     isDragging,
     isResizing,
+    isDraggingEvent,
+    draggedEvent,
+    mousePosition,
+    targetDropPosition,
     dragStart,
     dragEnd,
     tempResizeEnd,
     handleMouseDown,
     handleMouseEnterCell,
     handleResizeStart,
+    handleEventDragStart,
+    handleEventDragMove,
   };
 
   return (

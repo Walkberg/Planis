@@ -19,9 +19,20 @@ export const CalendarEvent = ({
   calendarRef,
 }: CalendarEventProps) => {
   const { selectedEvent, setSelectedEvent } = useEvents();
-  const { handleResizeStart, isResizing, tempResizeEnd } = useDragInteraction();
+  const {
+    handleResizeStart,
+    handleEventDragStart,
+    isResizing,
+    tempResizeEnd,
+    isDraggingEvent,
+    draggedEvent,
+  } = useDragInteraction();
   const { configs } = useConfig();
   const { headerHeight } = useCalendar();
+
+  const isBeingDragged = isDraggingEvent && draggedEvent?.id === event.id;
+
+  if (isBeingDragged) return null;
 
   const effectiveEnd =
     isResizing === event.id && tempResizeEnd ? tempResizeEnd : event.end;
@@ -53,7 +64,7 @@ export const CalendarEvent = ({
 
   return (
     <div
-      className={`event absolute border-[3px] border-black rounded-[10px] p-2 cursor-pointer transition-all duration-200 ${
+      className={`event absolute border-[3px] border-black rounded-[10px] p-2 cursor-move transition-all duration-200 ${
         selectedEvent?.id === event.id
           ? "shadow-neo-md scale-[1.02] z-10"
           : "shadow-neo z-5"
@@ -63,7 +74,7 @@ export const CalendarEvent = ({
         setSelectedEvent(event);
       }}
       onMouseDown={(e) => {
-        e.stopPropagation();
+        handleEventDragStart(event, e);
       }}
       onMouseUp={(e) => {
         e.stopPropagation();
@@ -99,7 +110,7 @@ export const CalendarEvent = ({
       )}
       <div
         onMouseDown={(e) => handleResizeStart(event, e)}
-        className="absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-black/50 transition-colors group"
+        className="resize-handle absolute bottom-0 left-0 right-0 h-3 cursor-ns-resize hover:bg-black/50 transition-colors group"
         title="Glisser pour redimensionner"
       >
         <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-black/40 group-hover:bg-black/70 rounded-full" />
