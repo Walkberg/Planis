@@ -49,8 +49,8 @@ export const CalendarAllDayEvents = ({
               key={event.id}
               className={`border-[3px] border-black rounded-lg px-2 py-1 cursor-pointer transition-all duration-200 ${
                 selectedEvent?.id === event.id
-                  ? "shadow-neo-md scale-[1.02] z-[10]"
-                  : "shadow-neo z-[5]"
+                  ? "shadow-neo-md scale-[1.02] z-10"
+                  : "shadow-neo z-5"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
