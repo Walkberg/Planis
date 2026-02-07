@@ -9,8 +9,10 @@ interface CalendarContextType {
   currentDate: Date;
   currentTime: Date;
   viewDays: number;
+  headerHeight: number;
   setCurrentDate: (date: Date) => void;
   setViewDays: (days: number) => void;
+  setHeaderHeight: (height: number) => void;
   changeMonth: (delta: number) => void;
   getDisplayDays: () => Date[];
   getMonthCalendar: () => Array<{ date: Date; isCurrentMonth: boolean }>;
@@ -40,6 +42,7 @@ export const CalendarProvider: React.FC<CalendarProviderProps> = ({
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentTime, setCurrentTime] = useState(new Date());
   const [viewDays, setViewDays] = useState(7);
+  const [headerHeight, setHeaderHeight] = useState(61);
 
   const getDisplayDays = () => {
     const days: Date[] = [];
@@ -108,7 +111,6 @@ export const CalendarProvider: React.FC<CalendarProviderProps> = ({
     setCurrentDate(newDate);
   };
 
-  // Update current time every minute
   React.useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -121,8 +123,10 @@ export const CalendarProvider: React.FC<CalendarProviderProps> = ({
     currentDate,
     currentTime,
     viewDays,
+    headerHeight,
     setCurrentDate,
     setViewDays,
+    setHeaderHeight,
     changeMonth,
     getDisplayDays,
     getMonthCalendar,

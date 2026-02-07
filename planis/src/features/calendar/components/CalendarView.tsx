@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useCalendar } from "../providers/CalendarProvider";
 import { CalendarHour } from "./CalendarHour";
 import { CalendarEvents } from "../../events/components/CalendarEvents";
@@ -11,7 +11,9 @@ const hours = Array.from({ length: 24 }, (_, i) => i);
 
 export const CalendarView = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
-  const { currentTime, getDisplayDays, isToday, isSameDay } = useCalendar();
+  const headerRef = useRef<HTMLDivElement>(null);
+  const { currentTime, getDisplayDays, isToday, isSameDay, setHeaderHeight } =
+    useCalendar();
   const { events, selectedEvent, setSelectedEvent } = useEvents();
   const { filteredConfigId } = useConfig();
   const displayDays = getDisplayDays();
@@ -19,6 +21,13 @@ export const CalendarView = () => {
   const filteredEvents = filteredConfigId
     ? events.filter((e) => e.eventConfigId === filteredConfigId)
     : events;
+
+  useEffect(() => {
+    if (headerRef.current) {
+      const height = headerRef.current.offsetHeight;
+      setHeaderHeight(height);
+    }
+  }, [displayDays, filteredEvents, setHeaderHeight]);
 
   return (
     <div
@@ -41,7 +50,11 @@ export const CalendarView = () => {
             (event) => event.isAllDay && isSameDay(event.start, day),
           );
           return (
-            <div key={i} className="sticky top-0 z-2">
+            <div
+              key={i}
+              ref={i === 0 ? headerRef : null}
+              className="sticky top-0 z-2"
+            >
               <div
                 className={`border-[3px] border-black p-4 text-center font-bold ${
                   i === 0 ? "border-l-[3px]" : "border-l-0"

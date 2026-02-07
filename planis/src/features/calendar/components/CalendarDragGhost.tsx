@@ -10,7 +10,7 @@ export const CalendarDragGhost = ({
   displayDays,
   calendarRef,
 }: CalendarDragGhostProps) => {
-  const { isSameDay } = useCalendar();
+  const { isSameDay, headerHeight } = useCalendar();
   const { isDragging, dragStart, dragEnd } = useDragInteraction();
 
   if (!isDragging || !dragStart || !dragEnd) return null;
@@ -30,7 +30,7 @@ export const CalendarDragGhost = ({
   const endHour = end.getHours() + end.getMinutes() / 60;
   const duration = endHour - startHour;
 
-  const topPosition = startHour * 60 + 61;
+  const topPosition = startHour * 60 + headerHeight;
   const height = duration * 60;
 
   const gridRef = calendarRef?.current;

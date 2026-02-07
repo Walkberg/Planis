@@ -2,6 +2,7 @@ import type { CalendarEvent as CalendarEventType } from "../../../types";
 import { useEvents } from "../providers/EventsProvider";
 import { useDragInteraction } from "../../interactions/providers/DragInteractionProvider";
 import { useConfig } from "../../configs/providers/ConfigProvider";
+import { useCalendar } from "../../calendar/providers/CalendarProvider";
 import { EventFieldFactory } from "./EventFieldFactory";
 
 interface CalendarEventProps {
@@ -20,6 +21,7 @@ export const CalendarEvent = ({
   const { selectedEvent, setSelectedEvent } = useEvents();
   const { handleResizeStart, isResizing, tempResizeEnd } = useDragInteraction();
   const { configs } = useConfig();
+  const { headerHeight } = useCalendar();
 
   const effectiveEnd =
     isResizing === event.id && tempResizeEnd ? tempResizeEnd : event.end;
@@ -28,7 +30,7 @@ export const CalendarEvent = ({
   const endHour = effectiveEnd.getHours() + effectiveEnd.getMinutes() / 60;
   const duration = endHour - startHour;
 
-  const topPosition = startHour * 60 + 61;
+  const topPosition = startHour * 60 + headerHeight;
   const height = duration * 60;
 
   const gridRef = calendarRef.current;
