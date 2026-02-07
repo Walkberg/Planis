@@ -4,6 +4,7 @@ import { useDragInteraction } from "../../interactions/providers/DragInteraction
 import { useConfig } from "../../configs/providers/ConfigProvider";
 import { useCalendar } from "../../calendar/providers/CalendarProvider";
 import { EventFieldFactory } from "./EventFieldFactory";
+import { formatDate } from "../../../utils/dateUtils";
 
 interface CalendarEventProps {
   event: CalendarEventType;
@@ -62,6 +63,22 @@ export const CalendarEvent = ({
       ? config.fieldConfigs.filter((field) => field.displayOnEvent)
       : [];
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    const isInteractiveElement =
+      target.closest("button") ||
+      target.closest("input") ||
+      target.closest("select") ||
+      target.closest("textarea") ||
+      target.closest("a") ||
+      target.closest(".resize-handle") ||
+      target.closest('[role="button"]');
+
+    if (!isInteractiveElement) {
+      handleEventDragStart(event, e);
+    }
+  };
+
   return (
     <div
       className={`event absolute border-[3px] border-black rounded-[10px] p-2 cursor-move transition-all duration-200 ${
@@ -73,9 +90,7 @@ export const CalendarEvent = ({
         e.stopPropagation();
         setSelectedEvent(event);
       }}
-      onMouseDown={(e) => {
-        handleEventDragStart(event, e);
-      }}
+      onMouseDown={handleMouseDown}
       onMouseUp={(e) => {
         e.stopPropagation();
       }}
@@ -91,15 +106,7 @@ export const CalendarEvent = ({
         {event.title || "Sans titre"}
       </div>
       <div className="text-[10px] mb-2">
-        {event.start.toLocaleTimeString("fr-FR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}{" "}
-        -{" "}
-        {effectiveEnd.toLocaleTimeString("fr-FR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
+        {formatDate(event.start)} - {formatDate(effectiveEnd)}
       </div>
       {displayFields.length > 0 && (
         <div className="flex flex-col gap-2 mt-2">
