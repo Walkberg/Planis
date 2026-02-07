@@ -149,7 +149,21 @@ export const CalendarEdit = () => {
           <input
             type="datetime-local"
             value={selectedEvent.start.toISOString().slice(0, 16)}
-            onChange={(e) => updateEvent({ start: new Date(e.target.value) })}
+            onChange={(e) => {
+              const newStart = new Date(e.target.value);
+              const updates: any = { start: newStart };
+
+              const isMultiDay =
+                newStart.getDate() !== selectedEvent.end.getDate() ||
+                newStart.getMonth() !== selectedEvent.end.getMonth() ||
+                newStart.getFullYear() !== selectedEvent.end.getFullYear();
+
+              if (isMultiDay) {
+                updates.isAllDay = true;
+              }
+
+              updateEvent(updates);
+            }}
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>
@@ -160,7 +174,21 @@ export const CalendarEdit = () => {
           <input
             type="datetime-local"
             value={selectedEvent.end.toISOString().slice(0, 16)}
-            onChange={(e) => updateEvent({ end: new Date(e.target.value) })}
+            onChange={(e) => {
+              const newEnd = new Date(e.target.value);
+              const updates: any = { end: newEnd };
+
+              const isMultiDay =
+                selectedEvent.start.getDate() !== newEnd.getDate() ||
+                selectedEvent.start.getMonth() !== newEnd.getMonth() ||
+                selectedEvent.start.getFullYear() !== newEnd.getFullYear();
+
+              if (isMultiDay) {
+                updates.isAllDay = true;
+              }
+
+              updateEvent(updates);
+            }}
             className="w-full p-3 border-[3px] border-black rounded-lg font-space text-sm box-border"
           />
         </div>

@@ -9,6 +9,14 @@ import React, {
 import { useEvents } from "../../events/providers/EventsProvider";
 import type { CalendarEvent } from "../../../types";
 
+const isMultiDay = (start: Date, end: Date): boolean => {
+  return (
+    start.getDate() !== end.getDate() ||
+    start.getMonth() !== end.getMonth() ||
+    start.getFullYear() !== end.getFullYear()
+  );
+};
+
 interface DragState {
   day: Date;
   hour: number;
@@ -180,7 +188,13 @@ export const DragInteractionProvider: React.FC<
         return;
       }
 
-      await updateEvent({ end: tempResizeEnd });
+      const updates: any = { end: tempResizeEnd };
+
+      if (isMultiDay(resizeStateRef.current.event.start, tempResizeEnd)) {
+        updates.isAllDay = true;
+      }
+
+      await updateEvent(updates);
 
       setIsResizing(false);
       setTempResizeEnd(null);
@@ -212,11 +226,19 @@ export const DragInteractionProvider: React.FC<
         return;
       }
 
-      await updateEvent({
+      const updates: any = {
         ...draggedEvent,
         start: targetDropPosition.startTime,
         end: targetDropPosition.endTime,
-      });
+      };
+
+      if (
+        isMultiDay(targetDropPosition.startTime, targetDropPosition.endTime)
+      ) {
+        updates.isAllDay = true;
+      }
+
+      await updateEvent(updates);
 
       setIsDraggingEvent(false);
       setDraggedEvent(null);
@@ -253,7 +275,7 @@ export const DragInteractionProvider: React.FC<
         start: dragStart.startTime!,
         end: endTime,
         color: "#ff6b35",
-        isAllDay: false,
+        isAllDay: isMultiDay(dragStart.startTime!, endTime),
         eventConfigId: "config-event",
         customFieldsValues: {},
         isDraft: true,
