@@ -94,7 +94,10 @@ export const CalendarDragGhost = ({
               }}
             >
               {isFirstDay && (
-                <div className="font-bold text-xs mb-1">Nouvel événement</div>
+                <>
+                  <div className="font-bold text-xs mb-1">Nouvel événement</div>
+                  <EventDate start={start} end={end} />
+                </>
               )}
             </div>,
           );
@@ -197,7 +200,10 @@ export const CalendarDragGhost = ({
               }}
             >
               {isFirstDay && (
-                <div className="font-bold text-xs mb-1">Déplacer ici</div>
+                <>
+                  <div className="font-bold text-xs mb-1">Déplacer ici</div>
+                  <EventDate start={start} end={end} />
+                </>
               )}
             </div>,
           );
