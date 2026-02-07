@@ -1,5 +1,6 @@
 import { useCalendar } from "../providers/CalendarProvider";
 import { useDragInteraction } from "../../interactions/providers/DragInteractionProvider";
+import { formatDate } from "../../../utils/dateUtils";
 
 interface CalendarDragGhostProps {
   displayDays: Date[];
@@ -59,17 +60,7 @@ export const CalendarDragGhost = ({
         }}
       >
         <div className="font-bold text-xs mb-1">Nouvel événement</div>
-        <div className="text-[10px]">
-          {start.toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}{" "}
-          -{" "}
-          {end.toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </div>
+        <EventDate start={start} end={end} />
       </div>
     );
   }
@@ -111,20 +102,18 @@ export const CalendarDragGhost = ({
         }}
       >
         <div className="font-bold text-xs mb-1">Déplacer ici</div>
-        <div className="text-[10px]">
-          {start.toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}{" "}
-          -{" "}
-          {end.toLocaleTimeString("fr-FR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </div>
+        <EventDate start={start} end={end} />
       </div>
     );
   }
 
   return null;
+};
+
+export const EventDate = ({ start, end }: { start: Date; end: Date }) => {
+  return (
+    <div className="text-[10px]">
+      {formatDate(start)} - {formatDate(end)}
+    </div>
+  );
 };

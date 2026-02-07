@@ -13,6 +13,7 @@ const hours = Array.from({ length: 24 }, (_, i) => i);
 export const CalendarView = () => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+
   const { currentTime, getDisplayDays, isToday, isSameDay, setHeaderHeight } =
     useCalendar();
   const { events, selectedEvent, setSelectedEvent } = useEvents();
