@@ -13,8 +13,12 @@ export const CalendarHour = ({
   dayIndex,
   isLastDay,
 }: CalendarHourProps) => {
-  const { handleMouseDown, handleMouseEnterCell, handleEventDragMove } =
-    useDragInteraction();
+  const {
+    handleMouseDown,
+    handleMouseEnterCell,
+    handleEventDragMove,
+    isDraggingEvent,
+  } = useDragInteraction();
 
   const formatTime = (hour: number) => {
     return `${hour.toString().padStart(2, "0")}:00`;
@@ -40,7 +44,11 @@ export const CalendarHour = ({
         {quarters.map((minutes, idx) => (
           <div
             key={idx}
-            onMouseDown={(e) => handleMouseDown(day, hour, minutes, e)}
+            onMouseDown={(e) => {
+              if (!isDraggingEvent) {
+                handleMouseDown(day, hour, minutes, e);
+              }
+            }}
             onMouseEnter={() => {
               handleMouseEnterCell(day, hour, minutes);
               handleEventDragMove(day, hour, minutes);
