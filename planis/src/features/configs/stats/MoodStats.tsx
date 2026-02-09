@@ -13,9 +13,7 @@ export const MoodStats: React.FC<StatsComponentProps<MoodStatsData>> = ({
   return (
     <div className="space-y-6">
       <div className="bg-neo-purple border-2 border-black p-4 rounded-lg shadow-neo-sm">
-        <div className="text-sm font-bold text-gray-600 mb-1">
-          Humeur la plus fréquente
-        </div>
+        <div className="text-sm font-bold mb-1">Humeur la plus fréquente</div>
         <div className="text-2xl font-black flex items-center gap-3">
           <span className="text-4xl">{mostFrequentMood?.emoji || "😐"}</span>
           <span>{mostFrequentMood?.label || "N/A"}</span>
