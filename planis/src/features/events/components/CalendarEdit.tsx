@@ -5,7 +5,6 @@ import { ConfigSelector } from "./ConfigSelector";
 import { DynamicFieldsRenderer } from "./DynamicFieldsRenderer";
 import { ColorPicker } from "../../../components/ui/ColorPicker";
 import { RecurrencePicker } from "./RecurencyPicker";
-import { ColorField } from "../../../components/ui/ColorField";
 
 export const CalendarEdit = () => {
   const { selectedEvent, setSelectedEvent, updateEvent, deleteEvent } =

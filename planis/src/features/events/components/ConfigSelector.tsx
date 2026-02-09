@@ -10,7 +10,7 @@ export const ConfigSelector: React.FC<ConfigSelectorProps> = ({
   selectedConfigId,
   onChange,
 }) => {
-  const { configs, loading, openManagement, setSelectedConfig } = useConfig();
+  const { configs, loading, setSelectedConfig } = useConfig();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
