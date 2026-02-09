@@ -10,7 +10,7 @@ interface CalendarEventProps {
   event: CalendarEventType;
   dayIndex: number;
   displayDaysLength: number;
-  calendarRef: React.RefObject<HTMLElement>;
+  calendarRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const CalendarEvent = ({

@@ -6,7 +6,7 @@ import type { CalendarEvent as CalendarEventType } from "../../../types";
 
 interface CalendarEventsProps {
   displayDays: Date[];
-  calendarRef: React.RefObject<HTMLDivElement> | null;
+  calendarRef: React.RefObject<HTMLDivElement | null> | null;
   filteredEvents: CalendarEventType[];
 }
 

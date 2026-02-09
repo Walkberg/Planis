@@ -35,7 +35,7 @@ export const CalendarAllDayEvents = ({
       }}
     >
       <div className="bg-neo-yellow border-r-[3px] border-black" />
-      {eventsByDay.map(({ day, events: dayEvents }, dayIndex) => (
+      {eventsByDay.map(({ events: dayEvents }, dayIndex) => (
         <div
           key={dayIndex}
           className={`bg-white min-h-[60px] p-2 flex flex-col gap-1 ${
