@@ -1,5 +1,10 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -17,10 +22,16 @@ function createWindow() {
   // En développement, charge l'URL du serveur Vite
   // En production, charge le fichier HTML buildé
   if (isDev) {
-    mainWindow.loadURL("http://localhost:5173");
+    mainWindow.loadURL("http://localhost:5173").catch((err) => {
+      console.error("Failed to load URL:", err);
+    });
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../renderer/dist/index.html"));
+    mainWindow
+      .loadFile(path.join(__dirname, "../renderer/dist/index.html"))
+      .catch((err) => {
+        console.error("Failed to load file:", err);
+      });
   }
 }
 
