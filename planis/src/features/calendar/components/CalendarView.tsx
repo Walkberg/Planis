@@ -223,7 +223,7 @@ export const CalendarView = () => {
       <CalendarEvents
         displayDays={displayDays}
         calendarRef={calendarRef}
-        filteredEvents={filteredEvents}
+        filteredEvents={filteredEvents.filter((e) => !e.isAllDay)}
       />
     </div>
   );
