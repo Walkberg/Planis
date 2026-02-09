@@ -68,6 +68,7 @@
     "wait-on": "^8.0.1"
   },
   "dependencies": {
+    "electron": "^40.2.1",
     "electron-updater": "^6.3.9"
   }
 }
